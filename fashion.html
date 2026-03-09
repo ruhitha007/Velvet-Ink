@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fashion — VELVET INK</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;700;900&family=Raleway:wght@200;300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --cherry:#8B0000; --cherry-glow:#DC143C;
+      --midnight:#080010; --indigo:#0A0520;
+      --gold:#B8860B; --gold-light:#DAA520;
+      --cream:#F5ECD7;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: #0d0010;
+      color: var(--cream); font-family: 'Raleway', sans-serif;
+      cursor: none; overflow-x: hidden;
+    }
+    body::before {
+      content:''; position:fixed; inset:0; pointer-events:none;
+      background:
+        radial-gradient(ellipse at 0% 50%, rgba(80,0,100,0.3) 0%, transparent 50%),
+        radial-gradient(ellipse at 100% 0%, rgba(139,0,0,0.2) 0%, transparent 50%);
+    }
+    .cursor { position:fixed; width:10px; height:10px; background:var(--gold-light); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); mix-blend-mode:difference; }
+
+    nav {
+      position:fixed; top:0; width:100%; z-index:1000;
+      display:flex; justify-content:space-between; align-items:center;
+      padding:1.5rem 4rem;
+      background:rgba(13,0,16,0.9); backdrop-filter:blur(20px);
+      border-bottom:1px solid rgba(184,134,11,0.2);
+    }
+    .logo { font-family:'Cinzel',serif; font-size:1.4rem; font-weight:900; letter-spacing:0.3em; color:var(--cream); text-decoration:none; }
+    .logo span { color:var(--cherry-glow); }
+    .nav-links { display:flex; gap:2rem; list-style:none; }
+    .nav-links a { color:rgba(245,236,215,0.5); text-decoration:none; font-size:0.75rem; letter-spacing:0.2em; text-transform:uppercase; transition:color 0.2s; }
+    .nav-links a.active { color:var(--gold-light); }
+    .nav-links a:hover { color:var(--cream); }
+    .btn-submit { padding:0.5rem 1.5rem; border:1px solid var(--gold); color:var(--gold-light); background:transparent; text-decoration:none; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; transition:all 0.3s; cursor:none; }
+    .btn-submit:hover { background:var(--gold); color:var(--midnight); }
+
+    /* MAGAZINE COVER HERO */
+    .mag-hero {
+      min-height:100vh; display:flex; align-items:center;
+      padding:0 4rem; position:relative; overflow:hidden;
+      border-bottom:1px solid rgba(184,134,11,0.15);
+    }
+    .mag-bg {
+      position:absolute; inset:0;
+      background:linear-gradient(135deg, #0d0010 0%, #1a0020 40%, #0a0010 100%);
+    }
+    .mag-pattern {
+      position:absolute; inset:0;
+      background-image: repeating-linear-gradient(45deg, rgba(184,134,11,0.03) 0px, rgba(184,134,11,0.03) 1px, transparent 1px, transparent 10px);
+    }
+
+    .mag-content { position:relative; z-index:2; max-width:55%; }
+    .mag-issue { font-size:0.6rem; letter-spacing:0.6em; text-transform:uppercase; color:var(--gold-light); margin-bottom:2rem; }
+    .mag-title {
+      font-family:'Cinzel',serif; font-size:clamp(3rem,9vw,8rem);
+      font-weight:900; line-height:0.85; margin-bottom:2rem;
+    }
+    .mag-title .gold { color:var(--gold-light); }
+    .mag-title .outline { color:transparent; -webkit-text-stroke:1px rgba(184,134,11,0.4); }
+    .mag-lead { font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-style:italic; color:rgba(245,236,215,0.65); line-height:1.9; max-width:500px; margin-bottom:3rem; }
+    .mag-cta { display:flex; gap:1rem; }
+    .btn-mag-primary { padding:0.9rem 2.5rem; background:var(--gold-light); color:var(--midnight); border:none; font-family:'Raleway',sans-serif; font-size:0.75rem; letter-spacing:0.3em; text-transform:uppercase; cursor:none; transition:all 0.3s; }
+    .btn-mag-primary:hover { background:var(--gold); }
+    .btn-mag-sec { padding:0.9rem 2.5rem; background:transparent; color:var(--cream); border:1px solid rgba(245,236,215,0.25); font-family:'Raleway',sans-serif; font-size:0.75rem; letter-spacing:0.3em; text-transform:uppercase; cursor:none; transition:all 0.3s; }
+    .btn-mag-sec:hover { border-color:var(--cream); }
+
+    .mag-aside { position:absolute; right:4rem; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:0.5rem; z-index:2; }
+    .issue-tag { writing-mode:vertical-rl; font-size:0.6rem; letter-spacing:0.4em; text-transform:uppercase; color:rgba(245,236,215,0.3); padding:1rem 0; }
+
+    /* EDITORIAL STRIPS */
+    .editorial-strip { display:flex; height:60px; overflow:hidden; }
+    .strip-item { flex:1; display:flex; align-items:center; justify-content:center; font-size:0.6rem; letter-spacing:0.4em; text-transform:uppercase; border-right:1px solid rgba(255,255,255,0.05); transition:all 0.3s; cursor:none; }
+    .strip-item:hover { background:var(--cherry-glow); }
+    .strip-item:nth-child(odd) { background:rgba(255,255,255,0.02); }
+
+    /* EDITORIALS */
+    .editorials { padding:6rem 4rem; }
+    .section-label { font-size:0.65rem; letter-spacing:0.5em; text-transform:uppercase; color:var(--gold-light); margin-bottom:1rem; }
+    .section-title { font-family:'Cinzel',serif; font-size:2rem; font-weight:400; margin-bottom:3rem; }
+
+    .editorial-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(255,255,255,0.04); }
+    .editorial-card {
+      background:#0d0010; padding:0; cursor:none;
+      overflow:hidden; position:relative;
+      transition:all 0.4s;
+    }
+    .editorial-card:hover .ed-overlay { opacity:1; }
+    .editorial-card:hover .ed-image { transform:scale(1.03); }
+
+    .ed-image-wrap { overflow:hidden; }
+    .ed-image {
+      height:320px; display:flex; align-items:center; justify-content:center;
+      font-size:6rem; transition:transform 0.6s ease;
+    }
+    .edbg1 { background:linear-gradient(160deg,#200010,#3d0020); }
+    .edbg2 { background:linear-gradient(160deg,#001020,#00203d); }
+    .edbg3 { background:linear-gradient(160deg,#201000,#3d2000); }
+    .edbg4 { background:linear-gradient(160deg,#0d0020,#200040); }
+    .edbg5 { background:linear-gradient(160deg,#200000,#400505); }
+    .edbg6 { background:linear-gradient(160deg,#001520,#003040); }
+
+    .ed-overlay {
+      position:absolute; inset:0; background:rgba(184,134,11,0.7);
+      display:flex; align-items:center; justify-content:center;
+      opacity:0; transition:opacity 0.3s;
+    }
+    .ed-overlay-btn { padding:0.6rem 1.5rem; border:1px solid var(--midnight); background:var(--midnight); color:var(--cream); font-family:'Raleway',sans-serif; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; cursor:none; }
+
+    .ed-info { padding:1.5rem; }
+    .ed-season { font-size:0.58rem; letter-spacing:0.4em; text-transform:uppercase; color:var(--gold-light); margin-bottom:0.4rem; }
+    .ed-title { font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:600; margin-bottom:0.3rem; line-height:1.3; }
+    .ed-by { font-size:0.72rem; color:rgba(245,236,215,0.4); }
+
+    /* MAGAZINE SPREAD */
+    .mag-spread { padding:4rem; background:rgba(0,0,0,0.3); border-top:1px solid rgba(184,134,11,0.1); border-bottom:1px solid rgba(184,134,11,0.1); }
+    .spread-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; }
+    .spread-visual { height:500px; background:linear-gradient(160deg,#1a000d,#3d0020); display:flex; align-items:center; justify-content:center; font-size:8rem; border:1px solid rgba(184,134,11,0.15); }
+    .spread-text {}
+    .spread-issue { font-size:0.6rem; letter-spacing:0.5em; text-transform:uppercase; color:var(--gold-light); margin-bottom:1rem; }
+    .spread-title { font-family:'Cinzel',serif; font-size:2.5rem; font-weight:900; line-height:1; margin-bottom:2rem; }
+    .spread-body { font-family:'Cormorant Garamond',serif; font-size:1.05rem; line-height:2; color:rgba(245,236,215,0.7); margin-bottom:2rem; }
+    .spread-tags { display:flex; flex-wrap:wrap; gap:0.5rem; }
+    .tag { padding:0.3rem 0.8rem; border:1px solid rgba(184,134,11,0.3); font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(245,236,215,0.4); }
+
+    /* LOOKBOOK */
+    .lookbook { padding:6rem 4rem; }
+    .look-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0.5rem; margin-top:3rem; }
+    .look-item { overflow:hidden; cursor:none; position:relative; }
+    .look-item:hover .look-overlay { opacity:1; }
+    .look-img { height:350px; display:flex; align-items:center; justify-content:center; font-size:4rem; transition:transform 0.4s; }
+    .look-item:hover .look-img { transform:scale(1.05); }
+    .lbg1 { background:linear-gradient(180deg,#1a0005,#3d0010); }
+    .lbg2 { background:linear-gradient(180deg,#00051a,#00103d); }
+    .lbg3 { background:linear-gradient(180deg,#1a0800,#3d1800); }
+    .lbg4 { background:linear-gradient(180deg,#050020,#0d0040); }
+    .look-overlay { position:absolute; bottom:0; left:0; right:0; padding:1rem; background:linear-gradient(to top, rgba(0,0,0,0.8), transparent); opacity:0; transition:opacity 0.3s; }
+    .look-name { font-size:0.75rem; }
+    .look-style { font-size:0.6rem; color:var(--gold-light); letter-spacing:0.3em; text-transform:uppercase; }
+
+    @media (max-width:900px) {
+      nav { padding:1rem 1.5rem; }
+      .mag-hero { padding:8rem 1.5rem 3rem; min-height:auto; }
+      .mag-content { max-width:100%; }
+      .mag-aside { display:none; }
+      .editorial-grid { grid-template-columns:1fr; }
+      .spread-grid { grid-template-columns:1fr; }
+      .look-grid { grid-template-columns:repeat(2,1fr); }
+      .editorials, .lookbook, .mag-spread { padding:4rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+
+  <nav>
+    <a href="index.html" class="logo">VELVET<span>·</span>INK</a>
+    <ul class="nav-links">
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="literature.html">Literature</a></li>
+      <li><a href="fashion.html" class="active">Fashion</a></li>
+      <li><a href="poetry.html">Poetry</a></li>
+      <li><a href="community.html">Community</a></li>
+    </ul>
+    <a href="upload.html" class="btn-submit">Submit Editorial</a>
+  </nav>
+
+  <!-- HERO -->
+  <div class="mag-hero">
+    <div class="mag-bg"></div>
+    <div class="mag-pattern"></div>
+    <div class="mag-content">
+      <p class="mag-issue">✦ Vol. XII · 2025 · The Dark Issue ✦</p>
+      <h1 class="mag-title">
+        THE<br>
+        <span class="gold">VELVET</span><br>
+        <span class="outline">ISSUE</span>
+      </h1>
+      <p class="mag-lead">Fashion is the most immediate form of self-creation. What we wear is our first sentence — before we speak, before we touch, we are already telling our story.</p>
+      <div class="mag-cta">
+        <button class="btn-mag-primary" onclick="document.querySelector('.editorials').scrollIntoView({behavior:'smooth'})">View Editorials</button>
+        <a href="upload.html" class="btn-mag-sec">Submit Your Work</a>
+      </div>
+    </div>
+    <div class="mag-aside">
+      <span class="issue-tag">Art · Fashion · Soul</span>
+    </div>
+  </div>
+
+  <!-- STRIP -->
+  <div class="editorial-strip">
+    <div class="strip-item">Haute Couture</div>
+    <div class="strip-item">Street Style</div>
+    <div class="strip-item">Avant-Garde</div>
+    <div class="strip-item">Dark Aesthetic</div>
+    <div class="strip-item">Sustainable</div>
+    <div class="strip-item">Editorial</div>
+    <div class="strip-item">Lookbook</div>
+    <div class="strip-item">Vintage</div>
+  </div>
+
+  <!-- EDITORIALS -->
+  <div class="editorials">
+    <p class="section-label">This Season's Editorials</p>
+    <h2 class="section-title">Where Fashion Becomes <em style="color:var(--gold-light);">Story</em></h2>
+    <div class="editorial-grid" id="editorialsGrid">
+      <!-- Seed cards rendered by JS so user uploads merge in automatically -->
+    </div>
+  </div>
+
+  <!-- SPREAD -->
+  <div class="mag-spread">
+    <div class="spread-grid">
+      <div class="spread-visual">👗</div>
+      <div class="spread-text">
+        <p class="spread-issue">Featured Essay · Fashion & Identity</p>
+        <h2 class="spread-title">What We Wear When No One Is Watching</h2>
+        <p class="spread-body">There is a version of ourselves that only exists in private — the self we dress for when the only audience is the mirror. This piece explores the radical honesty of solitary fashion: the garments we choose not to be seen in, and what they reveal about who we truly are beneath the performance.</p>
+        <p class="spread-body">Fashion historians often note that the most revealing clothes in history were those worn in private. The corset a woman loosened the moment her husband left. The bright color a widow wore only in her garden. The man's jacket that lived at the bottom of a trunk until its owner could finally wear it openly.</p>
+        <div class="spread-tags">
+          <span class="tag">Essay</span><span class="tag">Identity</span><span class="tag">Fashion Theory</span><span class="tag">Personal Style</span>
+        </div>
+        <button class="btn-mag-primary" style="margin-top:2rem; cursor:none;" onclick="alert('Full essay opening... ✦')">Read Full Essay →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOOKBOOK -->
+  <div class="lookbook">
+    <p class="section-label">Community Lookbook</p>
+    <h2 class="section-title">Styled by <em style="color:var(--gold-light);">Our Members</em></h2>
+    <div class="look-grid">
+      <div class="look-item">
+        <div class="look-img lbg1">🌹</div>
+        <div class="look-overlay">
+          <p class="look-name">Aria B.</p>
+          <p class="look-style">Dark Romance</p>
+        </div>
+      </div>
+      <div class="look-item">
+        <div class="look-img lbg2">🦋</div>
+        <div class="look-overlay">
+          <p class="look-name">Kai V.</p>
+          <p class="look-style">Avant-Garde</p>
+        </div>
+      </div>
+      <div class="look-item">
+        <div class="look-img lbg3">🔮</div>
+        <div class="look-overlay">
+          <p class="look-name">Selene M.</p>
+          <p class="look-style">Mystical</p>
+        </div>
+      </div>
+      <div class="look-item">
+        <div class="look-img lbg4">🌙</div>
+        <div class="look-overlay">
+          <p class="look-name">Rio S.</p>
+          <p class="look-style">Midnight Formal</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASHION READER MODAL -->
+  <div id="fashionModal" style="display:none; position:fixed; inset:0; z-index:2000; background:rgba(5,0,10,0.97); overflow-y:auto;">
+    <div style="max-width:780px; margin:0 auto; padding:4rem 2rem 6rem;">
+      <!-- Top bar -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:3rem; border-bottom:1px solid rgba(184,134,11,0.2); padding-bottom:1.5rem;">
+        <span style="font-size:0.6rem; letter-spacing:0.5em; text-transform:uppercase; color:var(--gold-light);">VELVET INK · FASHION</span>
+        <button onclick="closeFashionModal()" style="background:transparent; border:1px solid rgba(245,236,215,0.2); color:var(--cream); padding:0.5rem 1.2rem; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer;">✕ Close</button>
+      </div>
+      <!-- Content -->
+      <div id="fashionModalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('mousemove', e => {
+      const c = document.getElementById('cursor');
+      c.style.left = e.clientX + 'px'; c.style.top = e.clientY + 'px';
+    });
+
+    /* ── Toast ── */
+    function showToast(msg) {
+      let t = document.getElementById('vi-toast');
+      if (!t) { t = document.createElement('div'); t.id='vi-toast'; t.style.cssText='position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(60px);background:#C8961E;color:#0a0010;padding:.8rem 2rem;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;transition:transform .35s;z-index:9999;pointer-events:none;border-radius:2px;font-weight:600;'; document.body.appendChild(t); }
+      t.textContent = msg; t.style.transform = 'translateX(-50%) translateY(0)';
+      setTimeout(() => t.style.transform = 'translateX(-50%) translateY(60px)', 3000);
+    }
+
+    /* ── localStorage helpers ── */
+    const LS = {
+      getSession : ()    => JSON.parse(localStorage.getItem('vi_session')  || 'null'),
+      getFashion : ()    => JSON.parse(localStorage.getItem('vi_fashion')  || '[]'),
+      getMessages: ()    => JSON.parse(localStorage.getItem('vi_messages') || '[]'),
+      saveMessages: arr  => localStorage.setItem('vi_messages', JSON.stringify(arr)),
+    };
+
+    /* ── Demo editorials (static) ── */
+    const DEMO_EDITORIALS = [
+      { id:'de1', emoji:'🌹', bg:'edbg1', season:'SS 2025 · Haute Couture',  title:'The Language of Red: Power, Blood & Beauty',   by:'Valentina Rossi', desc:'Red is not a colour. It is a declaration. This editorial explores how crimson has threaded itself through the history of power dressing — from Renaissance nobility to contemporary runway rebellion. To wear red is to refuse invisibility.' },
+      { id:'de2', emoji:'🌊', bg:'edbg2', season:'FW 2025 · Street Style',   title:'Depth & Current: Underwater Aesthetics in RTW',  by:'Akira Tanaka',    desc:'What does it mean to dress like the ocean? Fluid silhouettes, shifting blues and translucent layers — this collection asks us to consider fashion as something that moves with us rather than constraining us. Water has no fixed form. Neither should we.' },
+      { id:'de3', emoji:'🔥', bg:'edbg3', season:'SS 2025 · Avant-Garde',    title:'Burning Silhouettes: Fire as Design Metaphor',   by:'Zara Mbeki',      desc:'Fire destroys and creates in the same breath. These pieces were designed with that paradox in mind — structured garments that appear on the verge of dissolution. Fashion at its most honest is always a little dangerous.' },
+      { id:'de4', emoji:'🌙', bg:'edbg4', season:'FW 2025 · Dark Aesthetic',  title:'Midnight Wardrobe: Dressing for the Moon',       by:'Isabeau Nox',     desc:'After midnight the rules dissolve. This editorial documents the private wardrobe — what we wear when no audience exists except ourselves. The most honest fashion happens in the dark, for an audience of one.' },
+      { id:'de5', emoji:'🦋', bg:'edbg5', season:'SS 2025 · Sustainable',    title:'Metamorphic Fashion: Clothes That Transform',    by:'Gaia Ferreira',   desc:'Transformation is the oldest story. This collection uses upcycled fabrics and modular design to ask a radical question: what if your clothes could become something entirely new without leaving your wardrobe?' },
+      { id:'de6', emoji:'❄️', bg:'edbg6', season:'FW 2025 · Minimalist',     title:'Arctic Blank: The Power of Negative Space',      by:'Sven Lindquist',  desc:'Minimalism is not absence. It is a highly deliberate choice to let silence speak. These all-white and ivory pieces explore the boundary between clothing and sculpture, asking what remains when everything unnecessary is removed.' },
+    ];
+
+    /* ── Merge demo + user-uploaded fashion ── */
+    function getAllEditorials() {
+      const BG_LIST = ['edbg1','edbg2','edbg3','edbg4','edbg5','edbg6'];
+      const EMOJIS  = { Editorial:'👗', Lookbook:'💄', 'Fashion Essay':'✒️', 'Style Journal':'📒', 'Design Story':'🪡' };
+      const userFashion = LS.getFashion().map((f, i) => ({
+        id     : f.id,
+        image  : f.image || null,
+        emoji  : EMOJIS[f.cat] || '👗',
+        bg     : BG_LIST[(DEMO_EDITORIALS.length + i) % BG_LIST.length],
+        season : (f.season || f.cat),
+        title  : f.title,
+        by     : f.author,
+        desc   : f.desc || 'No description provided.',
+        tags   : f.tags || '',
+        date   : f.date || ''
+      }));
+      return [...DEMO_EDITORIALS, ...userFashion];
+    }
+
+    /* ── Render editorial grid ── */
+    function renderEditorials() {
+      const all  = getAllEditorials();
+      const grid = document.getElementById('editorialsGrid');
+      if (!grid) return;
+      grid.innerHTML = all.map((e, idx) => `
+        <div class="editorial-card" onclick="openEditorial(${idx})">
+          <div class="ed-image-wrap">
+            <div class="ed-image ${e.bg}" style="${e.image ? `background-image:url('${e.image}');background-size:cover;background-position:center;` : ''}">
+              ${e.image ? '' : `<span style="font-size:3rem;">${e.emoji}</span>`}
+            </div>
+            <div class="ed-overlay"><button class="ed-overlay-btn">Read Editorial</button></div>
+          </div>
+          <div class="ed-info">
+            <p class="ed-season">${e.season}</p>
+            <h3 class="ed-title">${e.title}</h3>
+            <p class="ed-by">by ${e.by}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* ── Open editorial reader modal ── */
+    function openEditorial(idx) {
+      const e = getAllEditorials()[idx];
+      if (!e) return;
+      document.getElementById('fashionModalBody').innerHTML = `
+        <p style="font-size:0.6rem; letter-spacing:0.5em; text-transform:uppercase; color:var(--gold-light); margin-bottom:0.8rem;">${e.season}</p>
+        <h1 style="font-family:'Cinzel',serif; font-size:clamp(1.4rem,4vw,2.4rem); font-weight:400; line-height:1.2; margin-bottom:0.6rem; color:var(--cream);">${e.title}</h1>
+        <p style="font-size:0.72rem; letter-spacing:0.25em; text-transform:uppercase; color:rgba(245,236,215,0.35); margin-bottom:3rem;">by ${e.by}${e.date ? ' · ' + e.date : ''}</p>
+        <div style="width:100%; height:320px; ${e.image ? `background-image:url('${e.image}');background-size:cover;background-position:center;` : 'background:linear-gradient(135deg,#1a0030,#0a0020);display:flex;align-items:center;justify-content:center;font-size:5rem;'} margin-bottom:3rem; border:1px solid rgba(184,134,11,0.15);">
+          ${e.image ? '' : e.emoji}
+        </div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:1.15rem; line-height:2.1; color:rgba(245,236,215,0.82); white-space:pre-wrap; margin-bottom:3rem;">${e.desc}</div>
+        ${e.tags ? `<div style="margin-bottom:2.5rem;">${e.tags.split(',').map(t => `<span style="display:inline-block;margin:.2rem;padding:.3rem .8rem;border:1px solid rgba(184,134,11,0.3);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-light);">${t.trim()}</span>`).join('')}</div>` : ''}
+        <div style="border-top:1px solid rgba(184,134,11,0.15); padding-top:2rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:gap;">
+          <p style="font-size:0.72rem; color:rgba(245,236,215,0.35); letter-spacing:0.2em;">Enjoyed this editorial?</p>
+          <button onclick="contactCreator('${e.by}')" style="padding:.7rem 2rem; background:var(--gold-light); color:#0a0010; border:none; font-size:.72rem; letter-spacing:.2em; text-transform:uppercase; cursor:pointer;">✉ Contact ${e.by}</button>
+        </div>
+      `;
+      document.getElementById('fashionModal').style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeFashionModal() {
+      document.getElementById('fashionModal').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    /* ── Contact fashion creator buttons ── */
+    function contactCreator(name) {
+      const session = LS.getSession();
+      if (!session) { showToast('Sign in to contact creators →'); setTimeout(()=>window.location.href='login.html',1400); return; }
+      const msgs = LS.getMessages();
+      msgs.push({ from: session.name, fromEmail: session.email, to: name, msg: 'Loved your fashion work!', date: new Date().toLocaleDateString() });
+      LS.saveMessages(msgs);
+      showToast('Message sent to ' + name + '! ✦');
+    }
+
+    /* ── Nav session ── */
+    const session = LS.getSession();
+    if (session) {
+      const navAuth = document.querySelector('.nav-auth');
+      if (navAuth) navAuth.innerHTML = `<a href="profile.html" style="color:rgba(245,236,215,.7);text-decoration:none;font-size:.68rem;letter-spacing:.2em;">👤 ${session.name.split(' ')[0]}</a>`;
+    }
+
+    renderEditorials();
+  </script>
+</body>
+</html>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gallery — VELVET INK</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;700;900&family=Raleway:wght@200;300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --cherry:#8B0000; --cherry-light:#C0392B; --cherry-glow:#DC143C;
+      --midnight:#0A0A1A; --midnight-blue:#0D1B3E; --deep-blue:#1A1A3E;
+      --rust:#6B1A0A; --amber:#3D2200; --cream:#F5ECD7; --muted:#8A7A6A;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: #0f0800;
+      color: var(--cream); font-family: 'Raleway', sans-serif;
+      min-height: 100vh; cursor: none; overflow-x: hidden;
+    }
+    .cursor { position:fixed; width:12px; height:12px; background:var(--cherry-glow); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); mix-blend-mode:screen; }
+
+    /* BG */
+    body::before {
+      content:''; position:fixed; inset:0; pointer-events:none;
+      background:
+        radial-gradient(ellipse at 0% 0%, rgba(107,26,10,0.35) 0%, transparent 50%),
+        radial-gradient(ellipse at 100% 100%, rgba(139,0,0,0.2) 0%, transparent 50%);
+    }
+
+    nav {
+      position:fixed; top:0; width:100%; z-index:1000;
+      display:flex; justify-content:space-between; align-items:center;
+      padding:1.5rem 4rem;
+      background:rgba(15,8,0,0.9); backdrop-filter:blur(20px);
+      border-bottom:1px solid rgba(139,0,0,0.3);
+    }
+    .logo { font-family:'Cinzel',serif; font-size:1.4rem; font-weight:900; letter-spacing:0.3em; color:var(--cream); text-decoration:none; }
+    .logo span { color:var(--cherry-glow); }
+    .nav-links { display:flex; gap:2rem; list-style:none; }
+    .nav-links a { color:rgba(245,236,215,0.6); text-decoration:none; font-size:0.75rem; letter-spacing:0.2em; text-transform:uppercase; transition:color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color:var(--cream); }
+    .nav-links a.active { color:var(--cherry-glow); }
+    .btn-upload { padding:0.5rem 1.5rem; background:var(--cherry-glow); color:#fff; text-decoration:none; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; transition:all 0.3s; cursor:none; }
+    .btn-upload:hover { background:var(--cherry); }
+
+    /* HERO */
+    .gallery-hero {
+      padding: 12rem 4rem 4rem;
+      display:flex; justify-content:space-between; align-items:flex-end;
+    }
+    .hero-left h1 { font-family:'Cinzel',serif; font-size:clamp(3rem,8vw,6rem); font-weight:900; line-height:0.9; }
+    .hero-left h1 em { color:transparent; -webkit-text-stroke:1px var(--cherry-glow); font-style:normal; }
+    .hero-right { max-width:350px; }
+    .hero-desc { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-style:italic; color:rgba(245,236,215,0.6); line-height:1.8; }
+
+    /* FILTERS */
+    .filters {
+      padding:2rem 4rem; display:flex; gap:0.8rem; flex-wrap:wrap;
+      border-bottom:1px solid rgba(139,0,0,0.15);
+    }
+    .filter-btn {
+      padding:0.5rem 1.2rem; border:1px solid rgba(139,0,0,0.3);
+      background:transparent; color:rgba(245,236,215,0.6);
+      font-family:'Raleway',sans-serif; font-size:0.72rem;
+      letter-spacing:0.2em; text-transform:uppercase; cursor:none; transition:all 0.3s;
+    }
+    .filter-btn:hover, .filter-btn.active { background:var(--cherry-glow); border-color:var(--cherry-glow); color:#fff; }
+
+    /* GALLERY GRID */
+    .gallery-grid {
+      padding:3rem 4rem;
+      columns:4; column-gap:1rem;
+    }
+    .art-card {
+      break-inside:avoid; margin-bottom:1rem;
+      border:1px solid rgba(139,0,0,0.15);
+      overflow:hidden; position:relative;
+      background:rgba(15,8,0,0.8); cursor:none;
+      transition:all 0.3s; display:block;
+    }
+    .art-card:hover { border-color:var(--cherry-glow); transform:translateY(-3px); }
+    .art-card:hover .art-hover { opacity:1; }
+
+    .art-visual {
+      width:100%; display:flex; align-items:center; justify-content:center;
+      font-size:4rem; position:relative;
+    }
+    .av1 { height:280px; background:linear-gradient(160deg,#1a0000,#3d0505); }
+    .av2 { height:180px; background:linear-gradient(160deg,#001020,#051a3d); }
+    .av3 { height:320px; background:linear-gradient(160deg,#0a0020,#1a003d); }
+    .av4 { height:220px; background:linear-gradient(160deg,#1a0a00,#3d1a00); }
+    .av5 { height:260px; background:linear-gradient(160deg,#001a0a,#003d15); }
+    .av6 { height:200px; background:linear-gradient(160deg,#1a001a,#3d003d); }
+    .av7 { height:300px; background:linear-gradient(160deg,#1a1000,#3d2800); }
+    .av8 { height:240px; background:linear-gradient(160deg,#00101a,#00253d); }
+
+    .art-hover {
+      position:absolute; inset:0; background:rgba(139,0,0,0.75);
+      display:flex; flex-direction:column; justify-content:center; align-items:center;
+      opacity:0; transition:opacity 0.3s; gap:0.8rem;
+    }
+    .hover-view, .hover-poem {
+      padding:0.5rem 1.5rem; font-size:0.7rem; letter-spacing:0.25em; text-transform:uppercase;
+      cursor:none; transition:all 0.2s; font-family:'Raleway',sans-serif;
+    }
+    .hover-view { background:var(--cream); color:var(--midnight); border:none; }
+    .hover-poem { background:transparent; color:var(--cream); border:1px solid var(--cream); }
+    .hover-view:hover { background:var(--cherry-glow); color:#fff; }
+    .hover-poem:hover { background:rgba(255,255,255,0.1); }
+
+    .art-info { padding:1rem; }
+    .art-category { font-size:0.6rem; letter-spacing:0.35em; text-transform:uppercase; color:var(--cherry-glow); margin-bottom:0.3rem; }
+    .art-title { font-family:'Cormorant Garamond',serif; font-size:1rem; font-weight:600; margin-bottom:0.3rem; }
+    .art-author { font-size:0.72rem; color:rgba(245,236,215,0.45); }
+    .art-stats { display:flex; gap:1rem; margin-top:0.5rem; font-size:0.68rem; color:rgba(245,236,215,0.35); }
+
+    /* ARTWORK MODAL */
+    .modal-overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:2000;
+      display:none; align-items:center; justify-content:center; padding:2rem;
+    }
+    .modal-overlay.open { display:flex; }
+    .modal-box {
+      background:#0f0800; border:1px solid rgba(139,0,0,0.3);
+      max-width:900px; width:100%; max-height:90vh; overflow-y:auto;
+      display:grid; grid-template-columns:1fr 1fr;
+    }
+    .modal-art {
+      min-height:400px; display:flex; align-items:center; justify-content:center;
+      font-size:6rem; background:linear-gradient(160deg,#1a0000,#3d0505);
+      position:sticky; top:0;
+    }
+    .modal-content { padding:2.5rem; }
+    .modal-close { float:right; background:none; border:none; color:var(--cream); font-size:1.5rem; cursor:none; }
+    .modal-cat { font-size:0.6rem; letter-spacing:0.4em; text-transform:uppercase; color:var(--cherry-glow); margin-bottom:0.5rem; }
+    .modal-title { font-family:'Cinzel',serif; font-size:1.5rem; margin-bottom:0.3rem; }
+    .modal-author { font-size:0.8rem; color:rgba(245,236,215,0.5); margin-bottom:1.5rem; }
+    .modal-desc { font-family:'Cormorant Garamond',serif; font-size:1rem; font-style:italic; color:rgba(245,236,215,0.8); line-height:1.9; margin-bottom:2rem; }
+    .modal-divider { height:1px; background:rgba(139,0,0,0.2); margin:1.5rem 0; }
+    .modal-section-title { font-size:0.65rem; letter-spacing:0.4em; text-transform:uppercase; color:var(--cherry-glow); margin-bottom:1rem; }
+    .poem-input { width:100%; background:rgba(255,255,255,0.03); border:1px solid rgba(139,0,0,0.25); color:var(--cream); padding:0.8rem; font-family:'Cormorant Garamond',serif; font-size:0.95rem; resize:vertical; min-height:100px; outline:none; }
+    .poem-input:focus { border-color:var(--cherry-glow); }
+    .btn-poem { padding:0.6rem 1.5rem; background:var(--cherry-glow); border:none; color:#fff; font-family:'Raleway',sans-serif; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; cursor:none; margin-top:0.8rem; transition:all 0.3s; }
+    .btn-poem:hover { background:var(--cherry); }
+    .contact-btn { width:100%; padding:0.8rem; border:1px solid rgba(245,236,215,0.2); background:transparent; color:var(--cream); font-family:'Raleway',sans-serif; font-size:0.75rem; letter-spacing:0.2em; cursor:none; transition:all 0.3s; margin-top:1rem; }
+    .contact-btn:hover { border-color:var(--cream); background:rgba(255,255,255,0.05); }
+
+    /* Poems display */
+    .poem-item { padding:1rem; border-left:2px solid var(--cherry-glow); margin-bottom:1rem; background:rgba(220,20,60,0.04); }
+    .poem-text { font-family:'Cormorant Garamond',serif; font-size:0.95rem; font-style:italic; line-height:1.8; margin-bottom:0.4rem; }
+    .poem-by { font-size:0.65rem; letter-spacing:0.3em; text-transform:uppercase; color:rgba(245,236,215,0.4); }
+
+    @media (max-width:900px) {
+      .gallery-grid { columns:2; }
+      .modal-box { grid-template-columns:1fr; }
+    }
+    @media (max-width:600px) {
+      nav { padding:1rem 1.5rem; }
+      .gallery-hero { padding:8rem 1.5rem 2rem; flex-direction:column; gap:2rem; }
+      .filters { padding:1rem 1.5rem; }
+      .gallery-grid { columns:1; padding:1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+
+  <nav>
+    <a href="index.html" class="logo">VELVET<span>·</span>INK</a>
+    <ul class="nav-links">
+      <li><a href="gallery.html" class="active">Gallery</a></li>
+      <li><a href="literature.html">Literature</a></li>
+      <li><a href="fashion.html">Fashion</a></li>
+      <li><a href="poetry.html">Poetry</a></li>
+      <li><a href="community.html">Community</a></li>
+    </ul>
+    <a href="upload.html" class="btn-upload">+ Upload</a>
+  </nav>
+
+  <div class="gallery-hero">
+    <div class="hero-left">
+      <h1>ART<br><em>GALLERY</em></h1>
+    </div>
+    <div class="hero-right">
+      <p class="hero-desc">Every piece tells a story only its creator truly knows — until you read it here. Explore, feel, and write your own response.</p>
+    </div>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterArt(this, 'all')">All Works</button>
+    <button class="filter-btn" onclick="filterArt(this, 'painting')">Paintings</button>
+    <button class="filter-btn" onclick="filterArt(this, 'digital')">Digital Art</button>
+    <button class="filter-btn" onclick="filterArt(this, 'photo')">Photography</button>
+    <button class="filter-btn" onclick="filterArt(this, 'mixed')">Mixed Media</button>
+    <button class="filter-btn" onclick="filterArt(this, 'sculpture')">Sculpture</button>
+  </div>
+
+  <div class="gallery-grid" id="galleryGrid">
+    <!-- Cards injected by JS -->
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal-box">
+      <div class="modal-art" id="modalArt">🌹</div>
+      <div class="modal-content">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <p class="modal-cat" id="modalCat"></p>
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <p class="modal-author" id="modalAuthor"></p>
+        <p class="modal-desc" id="modalDesc"></p>
+        <div class="modal-divider"></div>
+        <p class="modal-section-title">Poems Written for this Piece</p>
+        <div id="poemsList"></div>
+        <div class="modal-divider"></div>
+        <p class="modal-section-title">Write a Poem for This Artwork</p>
+        <textarea class="poem-input" id="poemInput" placeholder="Let this artwork inspire your words..."></textarea>
+        <button class="btn-poem" onclick="submitPoem()">Publish My Poem ✦</button>
+        <div class="modal-divider"></div>
+        <button class="contact-btn" onclick="contactArtist()">✉ Contact the Artist</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('mousemove', e => {
+      const c = document.getElementById('cursor');
+      c.style.left = e.clientX + 'px'; c.style.top = e.clientY + 'px';
+    });
+
+    /* ── Toast ── */
+    function showToast(msg) {
+      let t = document.getElementById('vi-toast');
+      if (!t) { t = document.createElement('div'); t.id='vi-toast'; t.style.cssText='position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(60px);background:#DC143C;color:#fff;padding:.8rem 2rem;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;transition:transform .35s;z-index:9999;pointer-events:none;'; document.body.appendChild(t); }
+      t.textContent = msg; t.style.transform = 'translateX(-50%) translateY(0)';
+      setTimeout(() => t.style.transform = 'translateX(-50%) translateY(60px)', 3000);
+    }
+
+    /* ── localStorage helpers ── */
+    const LS = {
+      getSession   : ()      => JSON.parse(localStorage.getItem('vi_session')    || 'null'),
+      getArtworks  : ()      => JSON.parse(localStorage.getItem('vi_artworks')   || '[]'),
+      saveArtworks : arr     => localStorage.setItem('vi_artworks', JSON.stringify(arr)),
+      getPoems     : ()      => JSON.parse(localStorage.getItem('vi_art_poems')  || '{}'),
+      savePoems    : obj     => localStorage.setItem('vi_art_poems', JSON.stringify(obj)),
+      getLikes     : ()      => JSON.parse(localStorage.getItem('vi_art_likes')  || '{}'),
+      saveLikes    : obj     => localStorage.setItem('vi_art_likes', JSON.stringify(obj)),
+    };
+
+    /* ── Seed artworks (stored once) ── */
+    const SEED = [
+      { id:'s1', emoji:'🌹', bg:'av1', cat:'Painting',    title:'Crimson Solitude',  author:'Aria Blackwood', desc:"This painting emerged from three sleepless nights after a difficult farewell. The rose represents not beauty, but the sharp sting of what we hold onto long past its bloom. The crimson bleeds into darkness intentionally — grief doesn't end, it dissolves.", type:'painting'  },
+      { id:'s2', emoji:'🌊', bg:'av2', cat:'Digital Art', title:'Oceanic Memory',    author:'Kai Velmira',    desc:"I painted the sea as I remember my grandmother's voice — endless, moving, never quite the same twice. This piece is my love letter to her and the ocean she always dreamed of seeing.", type:'digital'  },
+      { id:'s3', emoji:'🌙', bg:'av3', cat:'Photography', title:'Midnight Reverie',  author:'Selene Marsh',   desc:"Shot at 3am on a night when insomnia gave me a gift. The moon felt impossibly close — like it was listening. I didn't edit this. Some moments are already perfect.", type:'photo'    },
+      { id:'s4', emoji:'🦋', bg:'av4', cat:'Mixed Media', title:'Metamorphosis',     author:'Rio Santos',     desc:"Torn magazine pages, watercolor, and ash from burned letters I wrote but never sent. About transformation being painful, necessary, and ultimately silent.", type:'mixed'    },
+      { id:'s5', emoji:'🔥', bg:'av5', cat:'Painting',    title:'The Burning Hour',  author:'Mira Cassell',   desc:"Every day has an hour where everything feels on the edge of transformation or destruction. I tried to catch that exact moment here — the fire of twilight.", type:'painting' },
+      { id:'s6', emoji:'🌸', bg:'av6', cat:'Digital Art', title:'Blossom Protocol',  author:'Nadia Osei',     desc:"A commentary on how we present ourselves online vs. who we truly are. The flowers are filters. The blue void underneath is the real face we hide.", type:'digital'  },
+      { id:'s7', emoji:'⚡', bg:'av7', cat:'Photography', title:'Storm Language',    author:'Eli Nakamura',   desc:"I spent six hours in the rain to capture this. The lightning never lies — it reveals everything for a split second. That's the truth I was chasing.", type:'photo'    },
+      { id:'s8', emoji:'🌿', bg:'av8', cat:'Mixed Media', title:'Root Memory',       author:'Soraya West',    desc:"My grandmother's hands pressed into clay, surrounded by her garden herbs preserved in resin. This piece lives in both dimensions — the material and the ancestral.", type:'mixed'    },
+    ];
+    if (!localStorage.getItem('vi_artworks')) LS.saveArtworks(SEED);
+
+    let currentArtId = null;
+
+    /* ── Get all artworks (seed + user-uploaded) ── */
+    function getAllArtworks() { return LS.getArtworks(); }
+
+    /* ── Render gallery ── */
+    function renderGallery(filter = 'all') {
+      const artworks = getAllArtworks();
+      const poems    = LS.getPoems();
+      const likes    = LS.getLikes();
+      const grid     = document.getElementById('galleryGrid');
+      const filtered = filter === 'all' ? artworks : artworks.filter(a => a.type === filter);
+      if (!filtered.length) { grid.innerHTML = '<p style="color:rgba(245,236,215,0.3);padding:4rem;text-align:center;font-style:italic;">No artworks yet. <a href="upload.html" style="color:#DC143C;">Upload the first one →</a></p>'; return; }
+      grid.innerHTML = filtered.map(art => `
+        <div class="art-card" onclick="openModal('${art.id}')">
+          <div class="art-visual ${art.bg}" style="${art.image ? `background-image:url('${art.image}');background-size:cover;background-position:center;` : ''}">
+            ${art.image ? '' : `<span>${art.emoji}</span>`}
+            <div class="art-hover">
+              <button class="hover-view">View Artwork</button>
+              <button class="hover-poem">Write a Poem</button>
+            </div>
+          </div>
+          <div class="art-info">
+            <p class="art-category">${art.cat}</p>
+            <h3 class="art-title">${art.title}</h3>
+            <p class="art-author">by ${art.author}</p>
+            <div class="art-stats">
+              <span onclick="likeArt(event,'${art.id}')" style="cursor:pointer;" title="Like">♥ ${likes[art.id] || 0}</span>
+              <span>✍ ${(poems[art.id]||[]).length} poems</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* ── Like artwork ── */
+    function likeArt(e, id) {
+      e.stopPropagation();
+      const liked = JSON.parse(localStorage.getItem('vi_liked_arts') || '[]');
+      if (liked.includes(id)) { showToast('Already liked ✦'); return; }
+      liked.push(id);
+      localStorage.setItem('vi_liked_arts', JSON.stringify(liked));
+      const likes = LS.getLikes(); likes[id] = (likes[id] || 0) + 1; LS.saveLikes(likes);
+      renderGallery(document.querySelector('.filter-btn.active')?.dataset?.type || 'all');
+      showToast('Liked! ♥');
+    }
+
+    /* ── Filter ── */
+    function filterArt(btn, type) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active'); btn.dataset.type = type;
+      renderGallery(type);
+    }
+
+    /* ── Open modal ── */
+    function openModal(id) {
+      const art = getAllArtworks().find(a => a.id === id);
+      if (!art) return;
+      currentArtId = id;
+      const modalArt = document.getElementById('modalArt');
+      if (art.image) {
+        modalArt.style.backgroundImage  = `url('${art.image}')`;
+        modalArt.style.backgroundSize   = 'cover';
+        modalArt.style.backgroundPosition = 'center';
+        modalArt.textContent = '';
+      } else {
+        modalArt.style.backgroundImage = 'none';
+        modalArt.style.background = 'linear-gradient(160deg,#1a0000,#3d0505)';
+        modalArt.textContent = art.emoji;
+      }
+      document.getElementById('modalCat').textContent    = art.cat;
+      document.getElementById('modalTitle').textContent  = art.title;
+      document.getElementById('modalAuthor').textContent = 'by ' + art.author;
+      document.getElementById('modalDesc').textContent   = art.desc;
+      renderPoems(id);
+      document.getElementById('modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() { document.getElementById('modal').classList.remove('open'); document.body.style.overflow=''; }
+
+    /* ── Render poems for artwork ── */
+    function renderPoems(id) {
+      const list = document.getElementById('poemsList');
+      const poems = LS.getPoems();
+      const artPoems = poems[id] || [];
+      list.innerHTML = artPoems.length
+        ? artPoems.map(p => `<div class="poem-item"><p class="poem-text">${p.text.replace(/\n/g,'<br>')}</p><p class="poem-by">— ${p.author} · ${p.date||''}</p></div>`).join('')
+        : '<p style="font-size:.8rem;color:rgba(245,236,215,.3);font-style:italic;">Be the first to write a poem for this piece...</p>';
+    }
+
+    /* ── Submit poem ── */
+    function submitPoem() {
+      const session = LS.getSession();
+      if (!session) { showToast('Please sign in to post a poem →'); setTimeout(()=>window.location.href='login.html',1400); return; }
+      const input = document.getElementById('poemInput');
+      const text  = input.value.trim();
+      if (!text) { showToast('Please write something first'); return; }
+      const poems = LS.getPoems();
+      if (!poems[currentArtId]) poems[currentArtId] = [];
+      poems[currentArtId].unshift({ text, author: session.name, date: new Date().toLocaleDateString() });
+      LS.savePoems(poems);
+      input.value = '';
+      renderPoems(currentArtId);
+      renderGallery(document.querySelector('.filter-btn.active')?.dataset?.type || 'all');
+      showToast('Your poem is published! ✦');
+    }
+
+    /* ── Contact artist ── */
+    function contactArtist() {
+      const session = LS.getSession();
+      if (!session) { showToast('Please sign in to contact artists'); setTimeout(()=>window.location.href='login.html',1400); return; }
+      const art   = getAllArtworks().find(a => a.id === currentArtId);
+      const msgs  = JSON.parse(localStorage.getItem('vi_messages') || '[]');
+      msgs.push({ from: session.name, to: art?.author, artTitle: art?.title, msg: 'Loved your work!', date: new Date().toLocaleDateString() });
+      localStorage.setItem('vi_messages', JSON.stringify(msgs));
+      showToast('Message sent to ' + (art?.author || 'the artist') + '! ✦');
+    }
+
+    /* ── Update nav if logged in ── */
+    const session = LS.getSession();
+    if (session) {
+      const navAuth = document.querySelector('.nav-auth');
+      if (navAuth) navAuth.innerHTML = `<a href="profile.html" class="btn-outline">👤 ${session.name.split(' ')[0]}</a><a href="#" onclick="logout()" class="btn-outline">Sign Out</a>`;
+    }
+    function logout() { localStorage.removeItem('vi_session'); window.location.reload(); }
+
+    document.getElementById('modal').addEventListener('click', function(e) { if (e.target===this) closeModal(); });
+
+    renderGallery();
+  </script>
+</body>
+</html>

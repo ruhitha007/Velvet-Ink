@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Profile — VELVET INK</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;700;900&family=Raleway:wght@200;300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --cherry:#8B0000; --cherry-glow:#DC143C; --bg:#060010; --cream:#F5ECD7; --gold:#DAA520; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:var(--bg); color:var(--cream); font-family:'Raleway',sans-serif; cursor:none; }
+    body::before { content:''; position:fixed; inset:0; pointer-events:none; background:radial-gradient(ellipse at 50% 0%, rgba(139,0,0,0.2) 0%, transparent 40%), radial-gradient(ellipse at 0% 100%, rgba(13,27,62,0.3) 0%, transparent 50%); }
+    .cursor { position:fixed; width:10px; height:10px; background:var(--cherry-glow); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); }
+    nav { position:fixed; top:0; width:100%; z-index:1000; display:flex; justify-content:space-between; align-items:center; padding:1.5rem 4rem; background:rgba(6,0,16,0.92); backdrop-filter:blur(20px); border-bottom:1px solid rgba(139,0,0,0.2); }
+    .logo { font-family:'Cinzel',serif; font-size:1.4rem; font-weight:900; letter-spacing:0.3em; color:var(--cream); text-decoration:none; }
+    .logo span { color:var(--cherry-glow); }
+    .nav-links { display:flex; gap:2rem; list-style:none; }
+    .nav-links a { color:rgba(245,236,215,0.5); text-decoration:none; font-size:0.75rem; letter-spacing:0.2em; text-transform:uppercase; transition:color 0.2s; }
+    .nav-links a:hover { color:var(--cream); }
+    .btn-upload { padding:0.5rem 1.5rem; background:var(--cherry-glow); color:#fff; text-decoration:none; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; cursor:none; }
+
+    /* PROFILE HEADER */
+    .profile-banner { height:300px; background:linear-gradient(135deg,#1a0010,#0d001a,#001020); position:relative; overflow:hidden; margin-top:70px; }
+    .banner-art { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:8rem; opacity:0.15; }
+    .banner-overlay { position:absolute; inset:0; background:linear-gradient(to bottom, transparent 0%, var(--bg) 100%); }
+
+    .profile-header { padding:0 4rem; position:relative; z-index:2; margin-top:-80px; }
+    .profile-avatar { width:120px; height:120px; border-radius:50%; background:linear-gradient(135deg,var(--cherry),var(--cherry-glow)); display:flex; align-items:center; justify-content:center; font-size:3rem; border:3px solid var(--bg); margin-bottom:1rem; }
+    .profile-name { font-family:'Cinzel',serif; font-size:2rem; font-weight:900; margin-bottom:0.3rem; }
+    .profile-handle { font-size:0.8rem; color:var(--cherry-glow); letter-spacing:0.2em; margin-bottom:0.5rem; }
+    .profile-bio { font-family:'Cormorant Garamond',serif; font-size:1rem; font-style:italic; color:rgba(245,236,215,0.6); max-width:500px; line-height:1.7; margin-bottom:1.5rem; }
+    .profile-tags { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+    .profile-tag { padding:0.3rem 0.8rem; border:1px solid rgba(139,0,0,0.3); font-size:0.65rem; letter-spacing:0.25em; text-transform:uppercase; color:rgba(245,236,215,0.5); }
+    .profile-actions { display:flex; gap:1rem; flex-wrap:wrap; }
+    .btn-edit { padding:0.6rem 1.5rem; border:1px solid rgba(245,236,215,0.2); color:var(--cream); background:transparent; font-family:'Raleway',sans-serif; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; cursor:none; transition:all 0.3s; }
+    .btn-edit:hover { border-color:var(--cream); background:rgba(255,255,255,0.04); }
+    .btn-newwork { padding:0.6rem 1.5rem; background:var(--cherry-glow); border:none; color:#fff; font-family:'Raleway',sans-serif; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; cursor:none; transition:all 0.3s; text-decoration:none; }
+
+    /* STATS ROW */
+    .stats-row { display:flex; gap:0; border-top:1px solid rgba(139,0,0,0.15); border-bottom:1px solid rgba(139,0,0,0.15); margin:2rem 4rem; }
+    .stat { flex:1; padding:1.5rem; text-align:center; border-right:1px solid rgba(139,0,0,0.1); }
+    .stat:last-child { border-right:none; }
+    .stat-num { font-family:'Cinzel',serif; font-size:2rem; color:var(--cherry-glow); }
+    .stat-label { font-size:0.65rem; letter-spacing:0.3em; text-transform:uppercase; color:rgba(245,236,215,0.35); margin-top:0.3rem; }
+
+    /* TABS */
+    .profile-tabs { display:flex; gap:0; padding:0 4rem; border-bottom:1px solid rgba(139,0,0,0.15); }
+    .ptab { padding:1rem 1.5rem; cursor:none; border:none; background:transparent; color:rgba(245,236,215,0.4); font-family:'Raleway',sans-serif; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; border-bottom:2px solid transparent; transition:all 0.3s; }
+    .ptab.active { color:var(--cherry-glow); border-bottom-color:var(--cherry-glow); }
+    .ptab:hover { color:var(--cream); }
+
+    /* WORKS */
+    .profile-works { padding:3rem 4rem; }
+    .works-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+    .work-card { background:rgba(255,255,255,0.02); border:1px solid rgba(139,0,0,0.15); overflow:hidden; cursor:none; transition:all 0.3s; }
+    .work-card:hover { border-color:rgba(220,20,60,0.4); }
+    .wc-visual { height:180px; display:flex; align-items:center; justify-content:center; font-size:3.5rem; }
+    .wbg1 { background:linear-gradient(135deg,#1a0000,#3d0505); }
+    .wbg2 { background:linear-gradient(135deg,#000d1a,#001a3d); }
+    .wbg3 { background:linear-gradient(135deg,#0d0020,#1a003d); }
+    .wbg4 { background:linear-gradient(135deg,#1a0a00,#3d1800); }
+    .wbg5 { background:linear-gradient(135deg,#001a05,#003d10); }
+    .wbg6 { background:linear-gradient(135deg,#1a0014,#3d0028); }
+    .wc-info { padding:1rem; }
+    .wc-type { font-size:0.58rem; letter-spacing:0.35em; text-transform:uppercase; color:var(--cherry-glow); margin-bottom:0.3rem; }
+    .wc-title { font-family:'Cormorant Garamond',serif; font-size:1rem; font-weight:600; margin-bottom:0.2rem; }
+    .wc-date { font-size:0.68rem; color:rgba(245,236,215,0.3); }
+
+    /* CONTACT */
+    .contact-section { padding:0 4rem 4rem; }
+    .contact-box { max-width:600px; background:rgba(255,255,255,0.02); border:1px solid rgba(139,0,0,0.2); padding:2.5rem; }
+    .contact-title { font-family:'Cinzel',serif; font-size:1.3rem; margin-bottom:0.5rem; }
+    .contact-sub { font-size:0.8rem; color:rgba(245,236,215,0.4); margin-bottom:2rem; }
+    .contact-input { width:100%; background:rgba(255,255,255,0.02); border:1px solid rgba(139,0,0,0.2); color:var(--cream); padding:0.8rem 1rem; font-family:'Raleway',sans-serif; font-size:0.88rem; outline:none; margin-bottom:1rem; transition:border-color 0.3s; cursor:none; }
+    .contact-input:focus { border-color:var(--cherry-glow); }
+    .contact-textarea { width:100%; background:rgba(255,255,255,0.02); border:1px solid rgba(139,0,0,0.2); color:var(--cream); padding:0.8rem 1rem; font-family:'Cormorant Garamond',serif; font-size:1rem; font-style:italic; resize:vertical; min-height:120px; outline:none; margin-bottom:1rem; transition:border-color 0.3s; cursor:none; }
+    .contact-textarea:focus { border-color:var(--cherry-glow); }
+    .btn-send { padding:0.8rem 2rem; background:var(--cherry-glow); border:none; color:#fff; font-family:'Raleway',sans-serif; font-size:0.75rem; letter-spacing:0.25em; text-transform:uppercase; cursor:none; transition:all 0.3s; }
+    .btn-send:hover { background:var(--cherry); }
+
+    @media (max-width:768px) { nav{padding:1rem 1.5rem;} .profile-header{padding:0 1.5rem;} .stats-row,.profile-tabs,.profile-works,.contact-section{padding-left:1.5rem; padding-right:1.5rem;} .works-grid{grid-template-columns:1fr 1fr;} }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <nav>
+    <a href="index.html" class="logo">VELVET<span>·</span>INK</a>
+    <ul class="nav-links">
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="literature.html">Literature</a></li>
+      <li><a href="fashion.html">Fashion</a></li>
+      <li><a href="poetry.html">Poetry</a></li>
+      <li><a href="community.html">Community</a></li>
+    </ul>
+    <a href="upload.html" class="btn-upload">+ Upload</a>
+  </nav>
+
+  <div class="profile-banner">
+    <div class="banner-art">🎨✍️👗</div>
+    <div class="banner-overlay"></div>
+  </div>
+
+  <div class="profile-header">
+    <div class="profile-avatar" id="profileAvatar">🎨</div>
+    <h1 class="profile-name" id="profileName">Creative Soul</h1>
+    <p class="profile-handle">@velvet_creative</p>
+    <p class="profile-bio">Visual artist exploring the intersection of darkness and light. Oil paintings that bleed emotion. Believer that every canvas is a confession.</p>
+    <div class="profile-tags">
+      <span class="profile-tag">Visual Artist</span>
+      <span class="profile-tag">Oil Painting</span>
+      <span class="profile-tag">Dark Art</span>
+      <span class="profile-tag">Poet</span>
+    </div>
+    <div class="profile-actions">
+      <button class="btn-edit" onclick="alert('Edit profile coming soon ✦')">Edit Profile</button>
+      <a href="upload.html" class="btn-newwork">+ New Work</a>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat"><div class="stat-num">12</div><div class="stat-label">Works</div></div>
+    <div class="stat"><div class="stat-num">847</div><div class="stat-label">Admirers</div></div>
+    <div class="stat"><div class="stat-num">38</div><div class="stat-label">Poems Received</div></div>
+    <div class="stat"><div class="stat-num">2.1K</div><div class="stat-label">Views</div></div>
+  </div>
+
+  <div class="profile-tabs">
+    <button class="ptab active" onclick="showTab('works', this)">All Works</button>
+    <button class="ptab" onclick="showTab('poems', this)">Poems Received</button>
+    <button class="ptab" onclick="showTab('contact', this)">Contact</button>
+  </div>
+
+  <!-- WORKS TAB -->
+  <div class="profile-works" id="tab-works">
+    <div class="works-grid">
+      <div class="work-card"><div class="wc-visual wbg1">🌹</div><div class="wc-info"><p class="wc-type">Painting</p><p class="wc-title">Crimson Solitude</p><p class="wc-date">Published Jan 12, 2025</p></div></div>
+      <div class="work-card"><div class="wc-visual wbg2">🌊</div><div class="wc-info"><p class="wc-type">Digital Art</p><p class="wc-title">Oceanic Memory</p><p class="wc-date">Published Feb 3, 2025</p></div></div>
+      <div class="work-card"><div class="wc-visual wbg3">🌙</div><div class="wc-info"><p class="wc-type">Photography</p><p class="wc-title">Midnight Reverie</p><p class="wc-date">Published Feb 28, 2025</p></div></div>
+      <div class="work-card"><div class="wc-visual wbg4">🔥</div><div class="wc-info"><p class="wc-type">Short Story</p><p class="wc-title">The Burning Hour</p><p class="wc-date">Published Mar 5, 2025</p></div></div>
+      <div class="work-card"><div class="wc-visual wbg5">🦋</div><div class="wc-info"><p class="wc-type">Essay</p><p class="wc-title">On Becoming</p><p class="wc-date">Published Mar 18, 2025</p></div></div>
+      <div class="work-card"><div class="wc-visual wbg6">🌸</div><div class="wc-info"><p class="wc-type">Fashion Editorial</p><p class="wc-title">The Velvet Hours</p><p class="wc-date">Published Apr 1, 2025</p></div></div>
+    </div>
+  </div>
+
+  <!-- POEMS TAB -->
+  <div class="profile-works" id="tab-poems" style="display:none;">
+    <p style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-style:italic; color:rgba(245,236,215,0.5); margin-bottom:2rem;">Poems others have written in response to your work:</p>
+    <div style="display:flex; flex-direction:column; gap:1rem;">
+      <div style="padding:2rem; border-left:2px solid var(--cherry-glow); background:rgba(220,20,60,0.04);">
+        <p style="font-size:0.58rem; letter-spacing:0.4em; text-transform:uppercase; color:rgba(245,236,215,0.3); margin-bottom:0.3rem;">For: Crimson Solitude</p>
+        <p style="font-family:'Cormorant Garamond',serif; font-size:1.05rem; font-style:italic; line-height:2; margin-bottom:0.8rem;">I watched it fall / the way you left— / without announcement, / without looking back.</p>
+        <p style="font-size:0.68rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--cherry-glow);">— Aria B.</p>
+      </div>
+      <div style="padding:2rem; border-left:2px solid var(--cherry-glow); background:rgba(220,20,60,0.04);">
+        <p style="font-size:0.58rem; letter-spacing:0.4em; text-transform:uppercase; color:rgba(245,236,215,0.3); margin-bottom:0.3rem;">For: Midnight Reverie</p>
+        <p style="font-family:'Cormorant Garamond',serif; font-size:1.05rem; font-style:italic; line-height:2; margin-bottom:0.8rem;">At 3 a.m., / I count the things I cannot fix. / The number is always / larger than the night.</p>
+        <p style="font-size:0.68rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--cherry-glow);">— Mira C.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT TAB -->
+  <div class="contact-section" id="tab-contact" style="display:none;">
+    <div class="contact-box">
+      <h2 class="contact-title">Send a Message</h2>
+      <p class="contact-sub">Interested in collaborating, purchasing work, or just want to connect? Send a message.</p>
+      <input type="text" class="contact-input" placeholder="Your name"/>
+      <input type="email" class="contact-input" placeholder="Your email"/>
+      <textarea class="contact-textarea" placeholder="Your message..."></textarea>
+      <button class="btn-send" onclick="alert('Message sent! ✦')">Send Message ✦</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('mousemove', e => { const c = document.getElementById('cursor'); c.style.left = e.clientX+'px'; c.style.top = e.clientY+'px'; });
+
+    /* ── Toast ── */
+    function showToast(msg) {
+      let t = document.getElementById('vi-toast');
+      if (!t) { t = document.createElement('div'); t.id='vi-toast'; t.style.cssText='position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(60px);background:#DC143C;color:#fff;padding:.8rem 2rem;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;transition:transform .35s;z-index:9999;pointer-events:none;border-radius:2px;'; document.body.appendChild(t); }
+      t.textContent = msg; t.style.transform = 'translateX(-50%) translateY(0)';
+      setTimeout(() => t.style.transform = 'translateX(-50%) translateY(60px)', 3000);
+    }
+
+    /* ── localStorage helpers ── */
+    const LS = {
+      getSession   : ()      => JSON.parse(localStorage.getItem('vi_session')     || 'null'),
+      clearSession : ()      => localStorage.removeItem('vi_session'),
+      getUserWorks : (email) => JSON.parse(localStorage.getItem('vi_myworks_' + email) || '[]'),
+      getArtPoems  : ()      => JSON.parse(localStorage.getItem('vi_art_poems')   || '{}'),
+      getMessages  : (email) => JSON.parse(localStorage.getItem('vi_inbox_' + email) || '[]'),
+      saveMessages : (email, arr) => localStorage.setItem('vi_inbox_' + email, JSON.stringify(arr)),
+    };
+
+    const session = LS.getSession();
+
+    /* ── If not logged in — show a guest message ── */
+    if (!session) {
+      document.getElementById('profileName').textContent = 'Guest';
+      document.querySelector('.profile-handle') && (document.querySelector('.profile-handle').textContent = '@sign-in-to-view');
+      document.querySelector('.profile-bio')    && (document.querySelector('.profile-bio').textContent    = 'Please sign in to see your profile.');
+      document.querySelector('.profile-role')   && (document.querySelector('.profile-role').textContent   = '—');
+      /* Replace stats with sign-in prompt */
+      const statsEl = document.querySelector('.profile-stats');
+      if (statsEl) statsEl.innerHTML = `<div style="padding:2rem;text-align:center;"><a href="login.html" style="color:#DC143C;letter-spacing:.2em;text-transform:uppercase;font-size:.75rem;">Sign In →</a> &nbsp;|&nbsp; <a href="register.html" style="color:rgba(245,236,215,.5);letter-spacing:.2em;text-transform:uppercase;font-size:.75rem;">Create Account →</a></div>`;
+    } else {
+      /* ── Populate profile info ── */
+      document.getElementById('profileName').textContent = session.name;
+      const handleEl = document.querySelector('.profile-handle');
+      if (handleEl) handleEl.textContent = session.handle || '@' + session.name.toLowerCase().replace(/\s/g,'_');
+      const bioEl = document.querySelector('.profile-bio');
+      if (bioEl) bioEl.textContent = session.bio || 'No bio yet — edit your profile to add one.';
+      const roleEl = document.querySelector('.profile-role');
+      if (roleEl) roleEl.textContent = session.role || 'Creative';
+
+      /* ── Load works ── */
+      const myWorks   = LS.getUserWorks(session.email);
+      const artPoems  = LS.getArtPoems();
+
+      /* Poems received = all poems on artworks I uploaded */
+      const myArtIds     = myWorks.filter(w => w.type === 'Artwork').map(w => w.id);
+      const poemsReceived = myArtIds.flatMap(id => (artPoems[id] || []).map(p => ({ ...p, artId: id })));
+
+      /* ── Update stat numbers ── */
+      const statNums = document.querySelectorAll('.stat-num');
+      if (statNums[0]) statNums[0].textContent = myWorks.length;
+      if (statNums[1]) statNums[1].textContent = Math.floor(myWorks.length * 12 + 10); /* admirers estimate */
+      if (statNums[2]) statNums[2].textContent = poemsReceived.length;
+      if (statNums[3]) statNums[3].textContent = myWorks.length > 0 ? myWorks.length * Math.floor(Math.random() * 300 + 100) : 0;
+
+      /* ── Render works tab ── */
+      const worksGrid = document.getElementById('tab-works');
+      if (worksGrid) {
+        const EMOJIS = { Artwork:'🎨', Literature:'📖', Fashion:'👗', Poetry:'✍️' };
+        const BG_STYLES = ['background:linear-gradient(135deg,#200002,#450007)', 'background:linear-gradient(135deg,#000518,#000d35)', 'background:linear-gradient(135deg,#0d0018,#1f0038)', 'background:linear-gradient(135deg,#160800,#360e00)', 'background:linear-gradient(135deg,#001800,#003508)', 'background:linear-gradient(135deg,#200018,#440035)'];
+        if (!myWorks.length) {
+          worksGrid.querySelector('.works-grid') && (worksGrid.querySelector('.works-grid').innerHTML = '<p style="color:rgba(245,236,215,.3);padding:2rem;font-style:italic;grid-column:1/-1;">No uploads yet. <a href="upload.html" style="color:#DC143C;">Upload your first work →</a></p>');
+        } else {
+          const grid = worksGrid.querySelector('.works-grid');
+          if (grid) grid.innerHTML = myWorks.map((w, i) => `
+            <div class="work-card">
+              <div class="work-thumb" style="${BG_STYLES[i % BG_STYLES.length]};min-height:150px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;">${EMOJIS[w.type] || '🎨'}</div>
+              <div class="work-info-inner" style="padding:.9rem;">
+                <p style="font-size:.58rem;letter-spacing:.35em;text-transform:uppercase;color:#DC143C;margin-bottom:.2rem;">${w.type} · ${w.cat}</p>
+                <p style="font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;margin-bottom:.2rem;">${w.title}</p>
+                <p style="font-size:.62rem;color:rgba(245,236,215,.3);">Published ${w.date}</p>
+              </div>
+            </div>
+          `).join('');
+        }
+      }
+
+      /* ── Render poems received tab ── */
+      const poemsEl = document.getElementById('tab-poems');
+      if (poemsEl) {
+        const poemsList = poemsEl.querySelector('.poems-received');
+        if (poemsList) {
+          if (!poemsReceived.length) {
+            poemsList.innerHTML = '<p style="color:rgba(245,236,215,.3);font-style:italic;">No poems received yet. Upload artwork and others can write poems for it.</p>';
+          } else {
+            poemsList.innerHTML = poemsReceived.map(p => `
+              <div style="padding:1.2rem 1.5rem;border-left:2px solid #DC143C;background:rgba(220,20,60,.04);margin-bottom:.8rem;">
+                <p style="font-size:.56rem;letter-spacing:.4em;text-transform:uppercase;color:rgba(245,236,215,.3);margin-bottom:.3rem;">For your artwork</p>
+                <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;line-height:1.9;margin-bottom:.5rem;">${p.text.replace(/\n/g,'<br>')}</p>
+                <p style="font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:#DC143C;">— ${p.author}</p>
+              </div>
+            `).join('');
+          }
+        }
+      }
+
+      /* ── Contact form sends to localStorage inbox ── */
+      const sendBtn = document.querySelector('.btn-send');
+      if (sendBtn) {
+        sendBtn.onclick = function() {
+          const inputs = document.querySelectorAll('.contact-input');
+          const msgEl  = document.querySelector('.contact-textarea');
+          const fromName  = inputs[0]?.value.trim();
+          const fromEmail = inputs[1]?.value.trim();
+          const msgText   = msgEl?.value.trim();
+          if (!fromName || !msgText) { showToast('Please fill in all fields'); return; }
+          const inbox = LS.getMessages(session.email);
+          inbox.push({ from: fromName, fromEmail, msg: msgText, date: new Date().toLocaleDateString() });
+          LS.saveMessages(session.email, inbox);
+          if (inputs[0]) inputs[0].value = '';
+          if (inputs[1]) inputs[1].value = '';
+          if (msgEl)     msgEl.value     = '';
+          showToast('Message delivered! ✦');
+        };
+      }
+    }
+
+    /* ── Tab switcher ── */
+    function showTab(tab, btn) {
+      ['works','poems','contact'].forEach(t => { const el = document.getElementById('tab-'+t); if(el) el.style.display='none'; });
+      document.querySelectorAll('.ptab').forEach(b => b.classList.remove('active'));
+      const target = document.getElementById('tab-'+tab);
+      if (target) target.style.display = 'block';
+      btn.classList.add('active');
+    }
+
+    /* ── Logout ── */
+    function logout() {
+      LS.clearSession();
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>

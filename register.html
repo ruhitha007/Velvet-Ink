@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Join — VELVET INK</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;700;900&family=Raleway:wght@200;300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --cherry:#8B0000; --cherry-light:#C0392B; --cherry-glow:#DC143C;
+      --midnight:#0A0A1A; --midnight-blue:#0D1B3E; --deep-blue:#1A1A3E;
+      --cream:#F5ECD7; --muted:#8A7A6A;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: #0a0614;
+      color: var(--cream); font-family: 'Raleway', sans-serif;
+      min-height: 100vh; cursor: none;
+      position: relative; overflow-x: hidden;
+    }
+    .cursor { position:fixed; width:10px; height:10px; background:var(--cherry-glow); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); mix-blend-mode:difference; }
+
+    .bg-layer {
+      position: fixed; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse at 10% 20%, rgba(139,0,0,0.25) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 80%, rgba(13,27,62,0.4) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(80,0,80,0.1) 0%, transparent 60%);
+    }
+
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      padding: 1.5rem 4rem; display: flex; justify-content: space-between; align-items: center;
+      background: rgba(10,6,20,0.85); backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(139,0,0,0.2);
+    }
+    .logo { font-family:'Cinzel',serif; font-size:1.4rem; font-weight:900; letter-spacing:0.3em; color:var(--cream); text-decoration:none; }
+    .logo span { color:var(--cherry-glow); }
+    .nav-back { font-size:0.75rem; color:rgba(245,236,215,0.5); text-decoration:none; letter-spacing:0.2em; transition:color 0.2s; }
+    .nav-back:hover { color:var(--cream); }
+
+    .page-wrap {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 8rem 2rem 4rem; position: relative; z-index: 2;
+    }
+
+    .register-container { width: 100%; max-width: 900px; }
+
+    .reg-header { text-align: center; margin-bottom: 4rem; }
+    .reg-eyebrow { font-size:0.65rem; letter-spacing:0.5em; text-transform:uppercase; color:var(--cherry-glow); margin-bottom:1rem; }
+    .reg-title { font-family:'Cinzel',serif; font-size:clamp(2rem,5vw,3.5rem); font-weight:900; margin-bottom:1rem; }
+    .reg-sub { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-style:italic; color:rgba(245,236,215,0.6); }
+
+    /* Role selector */
+    .role-selector { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:3rem; }
+    .role-card {
+      border: 1px solid rgba(139,0,0,0.25); padding: 1.5rem;
+      text-align: center; cursor: none; transition: all 0.3s;
+      background: rgba(255,255,255,0.02);
+      position: relative; overflow: hidden;
+    }
+    .role-card.active {
+      border-color: var(--cherry-glow);
+      background: rgba(220,20,60,0.08);
+    }
+    .role-card:hover { border-color: rgba(220,20,60,0.5); }
+    .role-icon { font-size:2rem; margin-bottom:0.7rem; }
+    .role-name { font-family:'Cinzel',serif; font-size:0.85rem; letter-spacing:0.2em; margin-bottom:0.4rem; }
+    .role-desc { font-size:0.72rem; color:rgba(245,236,215,0.45); line-height:1.6; }
+    .role-check {
+      position:absolute; top:0.7rem; right:0.7rem;
+      width:18px; height:18px; border-radius:50%;
+      background:var(--cherry-glow); display:none; align-items:center; justify-content:center;
+      font-size:0.6rem;
+    }
+    .role-card.active .role-check { display:flex; }
+
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+    .form-grid.full { grid-template-columns:1fr; }
+
+    .form-group { margin-bottom:0; }
+    .form-label { display:block; font-size:0.63rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--cherry-glow); margin-bottom:0.5rem; }
+    .form-input {
+      width:100%; background:rgba(255,255,255,0.03);
+      border:1px solid rgba(139,0,0,0.25); color:var(--cream);
+      padding:0.85rem 1.1rem; font-family:'Raleway',sans-serif;
+      font-size:0.88rem; transition:all 0.3s; outline:none; cursor:none;
+    }
+    .form-input:focus { border-color:var(--cherry-glow); background:rgba(220,20,60,0.04); }
+    .form-input::placeholder { color:rgba(245,236,215,0.2); }
+    textarea.form-input { resize:vertical; min-height:100px; }
+
+    .form-section {
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(139,0,0,0.2);
+      padding: 2rem; margin-bottom: 1.5rem;
+    }
+    .form-section-title { font-size:0.65rem; letter-spacing:0.4em; text-transform:uppercase; color:rgba(245,236,215,0.4); margin-bottom:1.5rem; }
+
+    .form-fields { display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; }
+    .form-fields .full { grid-column:1/-1; }
+
+    .strength-bar { height:3px; background:rgba(255,255,255,0.08); margin-top:0.4rem; }
+    .strength-fill { height:100%; width:0; background:var(--cherry-glow); transition:all 0.3s; }
+
+    .terms { display:flex; align-items:flex-start; gap:0.8rem; margin:1.5rem 0; }
+    .terms input { accent-color:var(--cherry-glow); margin-top:0.15rem; cursor:none; }
+    .terms label { font-size:0.8rem; color:rgba(245,236,215,0.55); line-height:1.6; cursor:none; }
+    .terms a { color:var(--cherry-glow); }
+
+    .btn-register {
+      width:100%; padding:1.1rem; background:var(--cherry-glow); border:none;
+      color:#fff; font-family:'Raleway',sans-serif; font-size:0.8rem;
+      letter-spacing:0.3em; text-transform:uppercase; cursor:none; transition:all 0.3s;
+    }
+    .btn-register:hover { background:var(--cherry); }
+
+    .login-prompt { text-align:center; margin-top:1.5rem; font-size:0.8rem; color:rgba(245,236,215,0.4); }
+    .login-prompt a { color:var(--cherry-glow); text-decoration:none; }
+
+    .progress-dots { display:flex; justify-content:center; gap:0.5rem; margin-bottom:3rem; }
+    .dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.1); transition:all 0.3s; }
+    .dot.active { background:var(--cherry-glow); width:24px; border-radius:4px; }
+
+    @media (max-width:768px) {
+      nav { padding:1rem 1.5rem; }
+      .role-selector { grid-template-columns:1fr; }
+      .form-fields { grid-template-columns:1fr; }
+      .form-fields .full { grid-column:1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="bg-layer"></div>
+
+  <nav>
+    <a href="index.html" class="logo">VELVET<span>·</span>INK</a>
+    <a href="login.html" class="nav-back">← Already a member?</a>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="register-container">
+      <div class="reg-header">
+        <p class="reg-eyebrow">✦ Join the Community ✦</p>
+        <h1 class="reg-title">Begin Your Creative Journey</h1>
+        <p class="reg-sub">Your canvas, your words, your vision — awaits.</p>
+      </div>
+
+      <!-- Role Selector -->
+      <div class="form-section">
+        <p class="form-section-title">I am primarily a...</p>
+        <div class="role-selector" id="roleSelector">
+          <div class="role-card active" onclick="selectRole(this)">
+            <div class="role-check">✓</div>
+            <div class="role-icon">🎨</div>
+            <div class="role-name">Visual Artist</div>
+            <div class="role-desc">Painter, illustrator, photographer, sculptor</div>
+          </div>
+          <div class="role-card" onclick="selectRole(this)">
+            <div class="role-check">✓</div>
+            <div class="role-icon">✍️</div>
+            <div class="role-name">Writer / Poet</div>
+            <div class="role-desc">Author, poet, essayist, blogger</div>
+          </div>
+          <div class="role-card" onclick="selectRole(this)">
+            <div class="role-check">✓</div>
+            <div class="role-icon">👗</div>
+            <div class="role-name">Fashion Creator</div>
+            <div class="role-desc">Designer, stylist, fashion writer, model</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Personal Info -->
+      <div class="form-section">
+        <p class="form-section-title">Personal Information</p>
+        <div class="form-fields">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" class="form-input" placeholder="Aria"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" class="form-input" placeholder="Blackwood"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Username</label>
+            <input type="text" class="form-input" placeholder="@velvet_aria"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-input" placeholder="aria@email.com"/>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Bio / Creative Statement</label>
+            <textarea class="form-input" placeholder="Tell the world about your artistic vision..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security -->
+      <div class="form-section">
+        <p class="form-section-title">Account Security</p>
+        <div class="form-fields">
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" id="pw" placeholder="••••••••" oninput="checkStrength(this.value)"/>
+            <div class="strength-bar"><div class="strength-fill" id="strengthBar"></div></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" class="form-input" placeholder="••••••••"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="terms">
+        <input type="checkbox" id="terms"/>
+        <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. I understand my creative works remain mine — Velvet Ink never claims ownership.</label>
+      </div>
+
+      <button class="btn-register" onclick="handleRegister()">Create My Account ✦</button>
+      <p class="login-prompt">Already part of the family? <a href="login.html">Sign in here →</a></p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('mousemove', e => {
+      const c = document.getElementById('cursor');
+      c.style.left = e.clientX + 'px'; c.style.top = e.clientY + 'px';
+    });
+
+    function selectRole(el) {
+      document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function checkStrength(val) {
+      const bar = document.getElementById('strengthBar');
+      let strength = 0;
+      if (val.length >= 8) strength++;
+      if (/[A-Z]/.test(val)) strength++;
+      if (/[0-9]/.test(val)) strength++;
+      if (/[^a-zA-Z0-9]/.test(val)) strength++;
+      const colors = ['#DC143C','#e67e22','#f1c40f','#2ecc71'];
+      bar.style.width = (strength * 25) + '%';
+      bar.style.background = colors[strength - 1] || 'rgba(255,255,255,0.1)';
+    }
+
+    /* ── Toast ── */
+    function showToast(msg, isError) {
+      let t = document.getElementById('vi-toast');
+      if (!t) { t = document.createElement('div'); t.id = 'vi-toast'; t.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(60px);padding:.8rem 2rem;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;transition:transform .35s;z-index:9999;border-radius:2px;pointer-events:none;color:#fff;'; document.body.appendChild(t); }
+      t.style.background = isError ? '#5a0000' : '#DC143C';
+      t.textContent = msg;
+      t.style.transform = 'translateX(-50%) translateY(0)';
+      setTimeout(() => t.style.transform = 'translateX(-50%) translateY(60px)', 3200);
+    }
+
+    /* ── localStorage Helpers ── */
+    const LS = {
+      getUsers  : () => JSON.parse(localStorage.getItem('vi_users')   || '[]'),
+      saveUsers : u  => localStorage.setItem('vi_users',   JSON.stringify(u)),
+      setSession: u  => localStorage.setItem('vi_session', JSON.stringify(u)),
+      getSession: () => JSON.parse(localStorage.getItem('vi_session')  || 'null'),
+    };
+
+    /* Redirect if already logged in */
+    if (LS.getSession()) window.location.href = 'profile.html';
+
+    function handleRegister() {
+      /* collect values */
+      const fname  = document.querySelector('input[placeholder="Aria"]')?.value.trim()       || '';
+      const lname  = document.querySelector('input[placeholder="Blackwood"]')?.value.trim()  || '';
+      const handle = document.querySelector('input[placeholder="@velvet_aria"]')?.value.trim()|| '';
+      const email  = document.querySelector('input[type="email"]')?.value.trim().toLowerCase()|| '';
+      const bio    = document.querySelector('textarea')?.value.trim()                         || '';
+      const pw     = document.getElementById('pw')?.value                                    || '';
+      const role   = document.querySelector('.role-card.active')?.dataset?.role || document.querySelector('.role-card.active .role-name')?.textContent || 'Artist';
+
+      if (!fname)   { showToast('Please enter your first name', true); return; }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToast('Please enter a valid email', true); return; }
+      if (pw.length < 6) { showToast('Password must be at least 6 characters', true); return; }
+
+      const users = LS.getUsers();
+      if (users.find(u => u.email === email)) { showToast('Email already registered ✕', true); return; }
+
+      const newUser = {
+        id     : 'u' + Date.now(),
+        name   : (fname + ' ' + lname).trim(),
+        email,
+        password: pw,
+        handle : handle ? (handle.startsWith('@') ? handle : '@' + handle) : '@' + fname.toLowerCase(),
+        role,
+        bio,
+        joined : new Date().toLocaleDateString('en-GB', { year:'numeric', month:'long', day:'numeric' }),
+        works  : 0
+      };
+      users.push(newUser);
+      LS.saveUsers(users);
+      LS.setSession({ id: newUser.id, name: newUser.name, email: newUser.email, handle: newUser.handle, role: newUser.role, bio: newUser.bio });
+
+      const btn = document.querySelector('.btn-register');
+      btn.textContent = 'Creating your sanctuary...';
+      btn.style.opacity = '0.7';
+      showToast('Welcome to Velvet Ink, ' + fname + '! ✦');
+      setTimeout(() => window.location.href = 'profile.html', 1400);
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') handleRegister(); });
+  </script>
+</body>
+</html>

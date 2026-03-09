@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign In — VELVET INK</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;700;900&family=Raleway:wght@200;300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --cherry: #8B0000; --cherry-light: #C0392B; --cherry-glow: #DC143C;
+      --midnight: #0A0A1A; --midnight-blue: #0D1B3E;
+      --deep-blue: #1A1A3E; --gold: #B8860B; --gold-light: #DAA520;
+      --cream: #F5ECD7; --muted: #8A7A6A;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: var(--midnight-blue);
+      color: var(--cream);
+      font-family: 'Raleway', sans-serif;
+      min-height: 100vh;
+      display: grid; grid-template-columns: 1fr 1fr;
+      cursor: none;
+    }
+
+    .cursor { position:fixed; width:10px; height:10px; background:var(--cherry-glow); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); mix-blend-mode:difference; }
+
+    /* LEFT PANEL */
+    .left-panel {
+      background: linear-gradient(160deg, #0a0014 0%, #1a0020 40%, #2d0a0a 100%);
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 4rem; position: relative; overflow: hidden;
+    }
+    .left-panel::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(139,0,0,0.3) 0%, transparent 70%);
+    }
+
+    .panel-deco {
+      position: absolute; font-family: 'Cinzel', serif;
+      font-size: 12rem; font-weight: 900; color: rgba(220,20,60,0.04);
+      line-height: 1; top: 50%; transform: translateY(-50%);
+      letter-spacing: -0.05em; pointer-events: none; white-space: nowrap;
+    }
+
+    .panel-content { position: relative; z-index: 2; }
+
+    .panel-logo {
+      font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 900;
+      letter-spacing: 0.3em; margin-bottom: 4rem; text-decoration: none; color: var(--cream);
+    }
+    .panel-logo span { color: var(--cherry-glow); }
+
+    .panel-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem; font-weight: 300; font-style: italic;
+      line-height: 1.3; margin-bottom: 1.5rem;
+    }
+    .panel-title strong { font-weight: 600; display: block; color: var(--cherry-glow); }
+
+    .panel-desc {
+      font-size: 0.85rem; line-height: 1.9;
+      color: rgba(245,236,215,0.55); max-width: 380px;
+    }
+
+    .panel-testimonial {
+      margin-top: 4rem; padding: 2rem;
+      border-left: 2px solid var(--cherry-glow);
+      background: rgba(220,20,60,0.05);
+    }
+    .testimonial-quote { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-style: italic; line-height: 1.7; margin-bottom: 0.8rem; }
+    .testimonial-author { font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--cherry-glow); }
+
+    .panel-shapes {
+      position: absolute; bottom: 0; right: 0;
+      width: 300px; height: 300px;
+      border-top: 1px solid rgba(220,20,60,0.2);
+      border-left: 1px solid rgba(220,20,60,0.2);
+    }
+    .panel-shapes::before {
+      content: ''; position: absolute; inset: 30px;
+      border-top: 1px solid rgba(220,20,60,0.1);
+      border-left: 1px solid rgba(220,20,60,0.1);
+    }
+
+    /* RIGHT PANEL - FORM */
+    .right-panel {
+      background: var(--midnight-blue);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      padding: 4rem 3rem;
+      position: relative;
+    }
+    .right-panel::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 80% 20%, rgba(13,27,62,0.5) 0%, transparent 60%);
+    }
+
+    .form-box {
+      width: 100%; max-width: 420px; position: relative; z-index: 2;
+    }
+
+    .form-header { text-align: center; margin-bottom: 3rem; }
+    .form-title { font-family: 'Cinzel', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .form-sub { font-size: 0.8rem; color: rgba(245,236,215,0.5); letter-spacing: 0.1em; }
+
+    .form-group { margin-bottom: 1.5rem; }
+    .form-label {
+      display: block; font-size: 0.65rem; letter-spacing: 0.3em;
+      text-transform: uppercase; color: var(--cherry-glow);
+      margin-bottom: 0.6rem;
+    }
+    .form-input {
+      width: 100%; background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(139,0,0,0.3); color: var(--cream);
+      padding: 0.9rem 1.2rem; font-family: 'Raleway', sans-serif;
+      font-size: 0.9rem; transition: all 0.3s; outline: none;
+      cursor: none;
+    }
+    .form-input:focus { border-color: var(--cherry-glow); background: rgba(220,20,60,0.05); }
+    .form-input::placeholder { color: rgba(245,236,215,0.25); }
+
+    .form-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .form-check { display: flex; align-items: center; gap: 0.5rem; }
+    .form-check input { accent-color: var(--cherry-glow); cursor: none; }
+    .form-check label { font-size: 0.78rem; color: rgba(245,236,215,0.6); cursor: none; }
+    .form-link { font-size: 0.78rem; color: var(--cherry-glow); text-decoration: none; transition: opacity 0.2s; }
+    .form-link:hover { opacity: 0.7; }
+
+    .btn-submit {
+      width: 100%; padding: 1rem; background: var(--cherry-glow);
+      border: none; color: #fff; font-family: 'Raleway', sans-serif;
+      font-size: 0.8rem; letter-spacing: 0.3em; text-transform: uppercase;
+      cursor: none; transition: all 0.3s; margin-bottom: 2rem;
+    }
+    .btn-submit:hover { background: var(--cherry); }
+
+    .divider { text-align: center; position: relative; margin: 1.5rem 0; }
+    .divider::before, .divider::after {
+      content: ''; position: absolute; top: 50%;
+      width: 40%; height: 1px; background: rgba(255,255,255,0.08);
+    }
+    .divider::before { left: 0; }
+    .divider::after { right: 0; }
+    .divider span { font-size: 0.7rem; color: rgba(245,236,215,0.3); letter-spacing: 0.2em; text-transform: uppercase; }
+
+    .social-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+    .social-btn {
+      padding: 0.7rem; border: 1px solid rgba(255,255,255,0.1);
+      background: transparent; color: var(--cream);
+      font-family: 'Raleway', sans-serif; font-size: 0.75rem;
+      cursor: none; transition: all 0.3s; text-align: center;
+    }
+    .social-btn:hover { border-color: var(--cream); background: rgba(255,255,255,0.03); }
+
+    .form-footer { text-align: center; font-size: 0.8rem; color: rgba(245,236,215,0.4); }
+    .form-footer a { color: var(--cherry-glow); text-decoration: none; }
+
+    /* Nav on mobile */
+    .mobile-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1rem 2rem; display: none;
+      justify-content: space-between; align-items: center;
+      background: rgba(10,10,26,0.9); backdrop-filter: blur(10px);
+    }
+
+    @media (max-width: 768px) {
+      body { grid-template-columns: 1fr; }
+      .left-panel { display: none; }
+      .right-panel { padding: 6rem 1.5rem 3rem; }
+      .mobile-nav { display: flex; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+
+  <div class="mobile-nav">
+    <a href="index.html" style="font-family:'Cinzel',serif; font-size:1.2rem; color:var(--cream); text-decoration:none;">VELVET<span style="color:var(--cherry-glow);">·</span>INK</a>
+    <a href="register.html" style="font-size:0.75rem; color:var(--cherry-glow); text-decoration:none; letter-spacing:0.2em; text-transform:uppercase;">Join →</a>
+  </div>
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div class="panel-deco">V·I</div>
+    <div class="panel-content">
+      <a href="index.html" class="panel-logo">VELVET<span>·</span>INK</a>
+      <h2 class="panel-title">
+        Welcome<br>back to your
+        <strong>creative home.</strong>
+      </h2>
+      <p class="panel-desc">Every brushstroke, every verse, every stitch — your journey continues here. Sign in and let your creativity flow.</p>
+      <div class="panel-testimonial">
+        <p class="testimonial-quote">"Velvet Ink gave my paintings a voice I never thought they could have. The poetry written about my work moves me to tears."</p>
+        <p class="testimonial-author">— Leila Movahed, Visual Artist</p>
+      </div>
+    </div>
+    <div class="panel-shapes"></div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+    <div class="form-box">
+      <div class="form-header">
+        <h1 class="form-title">Sign In</h1>
+        <p class="form-sub">Enter your creative sanctuary</p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" placeholder="your@email.com"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" placeholder="••••••••••"/>
+      </div>
+
+      <div class="form-row">
+        <div class="form-check">
+          <input type="checkbox" id="remember"/>
+          <label for="remember">Remember me</label>
+        </div>
+        <a href="#" class="form-link">Forgot password?</a>
+      </div>
+
+      <button class="btn-submit" onclick="handleLogin()">Enter the Sanctuary</button>
+
+      <div class="divider"><span>or continue with</span></div>
+
+      <div class="social-btns">
+        <button class="social-btn">🌐 Google</button>
+        <button class="social-btn">📘 Facebook</button>
+      </div>
+
+      <p class="form-footer">New to Velvet Ink? <a href="register.html">Create your account →</a></p>
+    </div>
+  </div>
+
+  <script>
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+
+    /* ── Toast ── */
+    function showToast(msg, isError) {
+      let t = document.getElementById('vi-toast');
+      if (!t) {
+        t = document.createElement('div'); t.id = 'vi-toast';
+        t.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(60px);padding:.8rem 2rem;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;transition:transform .35s;z-index:9999;border-radius:2px;pointer-events:none;color:#fff;';
+        document.body.appendChild(t);
+      }
+      t.style.background = isError ? '#5a0000' : '#DC143C';
+      t.textContent = msg;
+      t.style.transform = 'translateX(-50%) translateY(0)';
+      setTimeout(() => t.style.transform = 'translateX(-50%) translateY(60px)', 3200);
+    }
+
+    /* ── localStorage Helpers ── */
+    const LS = {
+      getUsers  : () => JSON.parse(localStorage.getItem('vi_users')   || '[]'),
+      getSession: () => JSON.parse(localStorage.getItem('vi_session')  || 'null'),
+      setSession: u  => localStorage.setItem('vi_session', JSON.stringify(u)),
+    };
+
+    /* ── Redirect if already logged in ── */
+    if (LS.getSession()) window.location.href = 'profile.html';
+
+    /* ── Login ── */
+    function handleLogin() {
+      const email = document.querySelector('input[type="email"]').value.trim().toLowerCase();
+      const pass  = document.querySelector('input[type="password"]').value;
+      if (!email || !pass) { showToast('Please fill in both fields', true); return; }
+
+      const users = LS.getUsers();
+      const found = users.find(u => u.email === email && u.password === pass);
+      if (!found) { showToast('Invalid email or password ✕', true); return; }
+
+      LS.setSession({ id: found.id, name: found.name, email: found.email, handle: found.handle, role: found.role, bio: found.bio || '' });
+      const btn = document.querySelector('.btn-submit');
+      btn.textContent = 'Entering your sanctuary...';
+      btn.style.opacity = '0.7';
+      showToast('Welcome back, ' + found.name.split(' ')[0] + '! ✦');
+      setTimeout(() => window.location.href = 'profile.html', 1300);
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+  </script>
+</body>
+</html>

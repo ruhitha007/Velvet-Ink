@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload — VELVET INK</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;700;900&family=Raleway:wght@200;300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --cherry:#8B0000; --cherry-glow:#DC143C; --midnight:#050510; --cream:#F5ECD7; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:#060008; color:var(--cream); font-family:'Raleway',sans-serif; cursor:none; min-height:100vh; }
+    body::before { content:''; position:fixed; inset:0; pointer-events:none; background:radial-gradient(ellipse at 30% 30%, rgba(139,0,0,0.2) 0%, transparent 50%), radial-gradient(ellipse at 70% 70%, rgba(13,27,62,0.3) 0%, transparent 50%); }
+    .cursor { position:fixed; width:10px; height:10px; background:var(--cherry-glow); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); }
+    nav { position:fixed; top:0; width:100%; z-index:1000; display:flex; justify-content:space-between; align-items:center; padding:1.5rem 4rem; background:rgba(6,0,8,0.92); backdrop-filter:blur(20px); border-bottom:1px solid rgba(139,0,0,0.2); }
+    .logo { font-family:'Cinzel',serif; font-size:1.4rem; font-weight:900; letter-spacing:0.3em; color:var(--cream); text-decoration:none; }
+    .logo span { color:var(--cherry-glow); }
+    .back-link { font-size:0.75rem; color:rgba(245,236,215,0.4); text-decoration:none; letter-spacing:0.2em; transition:color 0.2s; }
+    .back-link:hover { color:var(--cream); }
+
+    .page { padding:8rem 4rem 4rem; max-width:900px; margin:0 auto; }
+
+    .page-eyebrow { font-size:0.65rem; letter-spacing:0.5em; text-transform:uppercase; color:var(--cherry-glow); margin-bottom:1rem; }
+    .page-title { font-family:'Cinzel',serif; font-size:clamp(2rem,6vw,4rem); font-weight:900; margin-bottom:0.5rem; }
+    .page-sub { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-style:italic; color:rgba(245,236,215,0.5); margin-bottom:3rem; }
+
+    /* TYPE SELECTOR */
+    .type-tabs { display:flex; gap:0; margin-bottom:3rem; border:1px solid rgba(139,0,0,0.2); }
+    .type-tab { flex:1; padding:1rem; text-align:center; cursor:none; border:none; background:transparent; color:rgba(245,236,215,0.4); font-family:'Raleway',sans-serif; font-size:0.72rem; letter-spacing:0.25em; text-transform:uppercase; transition:all 0.3s; border-right:1px solid rgba(139,0,0,0.2); }
+    .type-tab:last-child { border-right:none; }
+    .type-tab.active { background:var(--cherry-glow); color:#fff; }
+    .type-tab:hover:not(.active) { background:rgba(220,20,60,0.1); color:var(--cream); }
+
+    /* FORM */
+    .upload-form { display:none; }
+    .upload-form.active { display:block; }
+
+    .form-section { margin-bottom:2rem; }
+    .form-section-title { font-size:0.62rem; letter-spacing:0.4em; text-transform:uppercase; color:rgba(245,236,215,0.35); margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:1px solid rgba(255,255,255,0.04); }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    .form-group { margin-bottom:1rem; }
+    .form-group.full { grid-column:1/-1; }
+    .label { display:block; font-size:0.62rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--cherry-glow); margin-bottom:0.5rem; }
+    .input, .textarea, .select { width:100%; background:rgba(255,255,255,0.02); border:1px solid rgba(139,0,0,0.2); color:var(--cream); padding:0.8rem 1rem; font-family:'Raleway',sans-serif; font-size:0.88rem; outline:none; transition:border-color 0.3s; cursor:none; }
+    .textarea { font-family:'Cormorant Garamond',serif; font-size:1rem; resize:vertical; min-height:150px; font-style:italic; }
+    .input:focus, .textarea:focus, .select:focus { border-color:var(--cherry-glow); }
+    .input::placeholder, .textarea::placeholder { color:rgba(245,236,215,0.2); }
+    .select option { background:#060008; }
+
+    /* DROPZONE */
+    .dropzone { border:2px dashed rgba(139,0,0,0.3); padding:4rem; text-align:center; cursor:none; transition:all 0.3s; margin-bottom:2rem; position:relative; }
+    .dropzone:hover, .dropzone.over { border-color:var(--cherry-glow); background:rgba(220,20,60,0.04); }
+    .dz-icon { font-size:3rem; margin-bottom:1rem; }
+    .dz-title { font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-style:italic; margin-bottom:0.5rem; }
+    .dz-sub { font-size:0.75rem; color:rgba(245,236,215,0.35); }
+    .dz-input { position:absolute; inset:0; opacity:0; cursor:none; }
+    .dz-preview { margin-top:1rem; font-size:0.8rem; color:var(--cherry-glow); }
+
+    .btn-publish { width:100%; padding:1.1rem; background:var(--cherry-glow); border:none; color:#fff; font-family:'Raleway',sans-serif; font-size:0.8rem; letter-spacing:0.3em; text-transform:uppercase; cursor:none; transition:all 0.3s; }
+    .btn-publish:hover { background:var(--cherry); }
+
+    .success-msg { display:none; text-align:center; padding:3rem; border:1px solid rgba(139,0,0,0.3); background:rgba(220,20,60,0.05); }
+    .success-msg.show { display:block; }
+    .success-icon { font-size:3rem; margin-bottom:1rem; }
+    .success-title { font-family:'Cinzel',serif; font-size:1.5rem; margin-bottom:0.5rem; }
+    .success-sub { font-size:0.85rem; color:rgba(245,236,215,0.5); margin-bottom:2rem; }
+    .success-links { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+    .success-btn { padding:0.7rem 1.5rem; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; text-decoration:none; transition:all 0.3s; }
+    .sb-primary { background:var(--cherry-glow); color:#fff; }
+    .sb-secondary { border:1px solid rgba(245,236,215,0.2); color:var(--cream); }
+
+    @media (max-width:768px) { nav { padding:1rem 1.5rem; } .page { padding:6rem 1.5rem 4rem; } .form-grid { grid-template-columns:1fr; } .form-group.full { grid-column:1; } }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <nav>
+    <a href="index.html" class="logo">VELVET<span>·</span>INK</a>
+    <a href="index.html" class="back-link">← Back to Home</a>
+  </nav>
+  <div class="page">
+    <p class="page-eyebrow">✦ Share Your Work ✦</p>
+    <h1 class="page-title">Upload & Publish</h1>
+    <p class="page-sub">Every upload is a gift to the community — choose your medium.</p>
+
+    <div class="type-tabs">
+      <button class="type-tab active" onclick="switchTab('art', this)">🎨 Artwork</button>
+      <button class="type-tab" onclick="switchTab('lit', this)">📖 Literature</button>
+      <button class="type-tab" onclick="switchTab('fashion', this)">👗 Fashion</button>
+      <button class="type-tab" onclick="switchTab('poem', this)">✍️ Poetry</button>
+    </div>
+
+    <!-- ART FORM -->
+    <div class="upload-form active" id="form-art">
+      <div class="dropzone" id="dropzone">
+        <input type="file" class="dz-input" accept="image/*" onchange="handleFile(this)"/>
+        <div class="dz-icon">🖼️</div>
+        <p class="dz-title">Drop your artwork here or click to browse</p>
+        <p class="dz-sub">JPG, PNG, GIF, WEBP · Max 20MB</p>
+        <p class="dz-preview" id="dzPreview"></p>
+        <div class="dz-preview-img"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group"><label class="label">Artwork Title *</label><input type="text" id="art-title" class="input" placeholder="Give your piece a name..."/></div>
+        <div class="form-group"><label class="label">Medium / Category *</label><select id="art-cat" class="select"><option>Painting</option><option>Digital Art</option><option>Photography</option><option>Mixed Media</option><option>Illustration</option><option>Sculpture</option></select></div>
+        <div class="form-group full"><label class="label">Artist Statement / Meaning *</label><textarea id="art-desc" class="textarea" placeholder="Tell us the story behind this piece. What inspired it? What does it mean to you?"></textarea></div>
+        <div class="form-group"><label class="label">Tags</label><input type="text" id="art-tags" class="input" placeholder="dark art, oil painting, nature..."/></div>
+        <div class="form-group"><label class="label">Allow Poetry Responses?</label><select id="art-poetry" class="select"><option value="yes">Yes — let others write poems for this</option><option value="no">No — viewing only</option></select></div>
+      </div>
+      <button class="btn-publish" onclick="publishWork()">Publish Artwork ✦</button>
+    </div>
+
+    <!-- LIT FORM -->
+    <div class="upload-form" id="form-lit">
+      <div class="dropzone">
+        <input type="file" id="lit-file" class="dz-input" accept="image/*" onchange="handleFile(this)"/>
+        <div class="dz-icon">📖</div>
+        <p class="dz-title">Upload a cover image (optional)</p>
+        <p class="dz-sub">JPG, PNG · Max 5MB</p>
+        <p class="dz-preview" id="dzPreviewLit"></p>
+        <div class="dz-preview-img"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group"><label class="label">Title *</label><input type="text" id="lit-title" class="input" placeholder="Your title..."/></div>
+        <div class="form-group"><label class="label">Genre *</label><select id="lit-genre" class="select"><option>Short Story</option><option>Novel Excerpt</option><option>Essay</option><option>Article</option><option>Memoir</option><option>Creative Nonfiction</option></select></div>
+        <div class="form-group full"><label class="label">Your Writing *</label><textarea id="lit-body" class="textarea" style="min-height:300px;" placeholder="Paste or write your piece here..."></textarea></div>
+        <div class="form-group full"><label class="label">About this Piece (optional)</label><textarea id="lit-about" class="textarea" placeholder="Share the inspiration or context behind your writing..."></textarea></div>
+      </div>
+      <button class="btn-publish" onclick="publishWork()">Publish to Literature Hub ✦</button>
+    </div>
+
+    <!-- FASHION FORM -->
+    <div class="upload-form" id="form-fashion">
+      <div class="dropzone">
+        <input type="file" id="fashion-file" class="dz-input" accept="image/*" onchange="handleFile(this)"/>
+        <div class="dz-icon">👗</div>
+        <p class="dz-title">Upload your fashion editorial or lookbook image</p>
+        <p class="dz-sub">JPG, PNG · Max 5MB</p>
+        <p class="dz-preview" id="dzPreviewFashion"></p>
+        <div class="dz-preview-img"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group"><label class="label">Editorial / Piece Title *</label><input type="text" id="fashion-title" class="input" placeholder="Title your fashion story..."/></div>
+        <div class="form-group"><label class="label">Category *</label><select id="fashion-cat" class="select"><option>Editorial</option><option>Lookbook</option><option>Fashion Essay</option><option>Style Journal</option><option>Design Story</option></select></div>
+        <div class="form-group full"><label class="label">The Story Behind It *</label><textarea id="fashion-desc" class="textarea" placeholder="What is this look saying? What inspired the aesthetic?"></textarea></div>
+        <div class="form-group"><label class="label">Season / Collection</label><input type="text" id="fashion-season" class="input" placeholder="e.g. FW 2025 · Dark Romance"/></div>
+        <div class="form-group"><label class="label">Style Tags</label><input type="text" id="fashion-tags" class="input" placeholder="dark academia, haute couture..."/></div>
+      </div>
+      <button class="btn-publish" onclick="publishWork()">Publish to Fashion Magazine ✦</button>
+    </div>
+
+    <!-- POETRY FORM -->
+    <div class="upload-form" id="form-poem">
+      <div class="dropzone">
+        <input type="file" id="poem-file" class="dz-input" accept="image/*" onchange="handleFile(this)"/>
+        <div class="dz-icon">✍️</div>
+        <p class="dz-title">Upload an image to accompany your poem (optional)</p>
+        <p class="dz-sub">JPG, PNG · Max 5MB</p>
+        <p class="dz-preview" id="dzPreviewPoem"></p>
+        <div class="dz-preview-img"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group"><label class="label">Poem Title *</label><input type="text" id="poem-title" class="input" placeholder="Title your verse..."/></div>
+        <div class="form-group"><label class="label">Inspired By (optional)</label><input type="text" id="poem-inspo" class="input" placeholder="An artwork, a feeling, a place..."/></div>
+        <div class="form-group full"><label class="label">Your Poem *</label><textarea id="poem-body" class="textarea" style="min-height:250px; font-size:1.1rem;" placeholder="Write freely. Every word has a home here."></textarea></div>
+      </div>
+      <button class="btn-publish" onclick="publishWork()">Share Your Poetry ✦</button>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success-msg" id="successMsg">
+      <div class="success-icon">✦</div>
+      <h2 class="success-title">Your work is live.</h2>
+      <p class="success-sub">Thank you for sharing your creativity with the Velvet Ink community.</p>
+      <div class="success-links">
+        <a href="gallery.html" class="success-btn sb-primary">View Gallery</a>
+        <a href="profile.html" class="success-btn sb-secondary">My Profile</a>
+        <a href="upload.html" class="success-btn sb-secondary">Upload More</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('mousemove', e => { const c = document.getElementById('cursor'); c.style.left = e.clientX+'px'; c.style.top = e.clientY+'px'; });
+
+    /* ── Toast ── */
+    function showToast(msg, isError) {
+      let t = document.getElementById('vi-toast');
+      if (!t) { t = document.createElement('div'); t.id='vi-toast'; t.style.cssText='position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(60px);padding:.8rem 2rem;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;transition:transform .35s;z-index:9999;pointer-events:none;color:#fff;border-radius:2px;'; document.body.appendChild(t); }
+      t.style.background = isError ? '#5a0000' : '#DC143C';
+      t.textContent = msg;
+      t.style.transform = 'translateX(-50%) translateY(0)';
+      setTimeout(() => t.style.transform = 'translateX(-50%) translateY(60px)', 3200);
+    }
+
+    /* ── localStorage helpers ── */
+    const LS = {
+      getSession  : ()    => JSON.parse(localStorage.getItem('vi_session')    || 'null'),
+      getArtworks : ()    => JSON.parse(localStorage.getItem('vi_artworks')   || '[]'),
+      saveArtworks: arr   => localStorage.setItem('vi_artworks',  JSON.stringify(arr)),
+      getLiterature:()    => JSON.parse(localStorage.getItem('vi_literature') || '[]'),
+      saveLiterature: arr => localStorage.setItem('vi_literature', JSON.stringify(arr)),
+      getFashion  : ()    => JSON.parse(localStorage.getItem('vi_fashion')    || '[]'),
+      saveFashion : arr   => localStorage.setItem('vi_fashion',   JSON.stringify(arr)),
+      getPoetry   : ()    => JSON.parse(localStorage.getItem('vi_poetry')     || '[]'),
+      savePoetry  : arr   => localStorage.setItem('vi_poetry',   JSON.stringify(arr)),
+      getUserWorks: (email) => JSON.parse(localStorage.getItem('vi_myworks_' + email) || '[]'),
+      saveUserWorks:(email,arr) => localStorage.setItem('vi_myworks_' + email, JSON.stringify(arr)),
+    };
+
+    /* ── Image store — holds base64 per tab ── */
+    const uploadedImages = { art: null, lit: null, fashion: null, poem: null };
+
+    /* ── Current tab tracking ── */
+    let currentTab = 'art';
+
+    function switchTab(type, btn) {
+      document.querySelectorAll('.type-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.upload-form').forEach(f => f.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('form-' + type).classList.add('active');
+      currentTab = type;
+    }
+
+    function handleFile(input) {
+      if (!input.files[0]) return;
+      const file   = input.files[0];
+      const formEl = input.closest('.upload-form');
+      const tabKey = formEl ? formEl.id.replace('form-','') : 'art';
+
+      /* Show file name */
+      const nameEl = formEl ? formEl.querySelector('.dz-preview') : null;
+      if (nameEl) nameEl.textContent = '✓ ' + file.name;
+
+      /* Convert to base64 and store + show preview */
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        uploadedImages[tabKey] = ev.target.result;
+        /* Show thumbnail inside dropzone */
+        const imgWrap = formEl ? formEl.querySelector('.dz-preview-img') : null;
+        if (imgWrap) {
+          imgWrap.innerHTML = `<img src="${ev.target.result}" style="max-height:200px;max-width:100%;border-radius:6px;margin-top:1rem;object-fit:cover;border:1px solid rgba(255,255,255,0.1);"/>`;
+        }
+        showToast('Image loaded ✓');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    /* ── Random helpers ── */
+    const EMOJIS = { Painting:'🖼️','Digital Art':'💻',Photography:'📷','Mixed Media':'🎭',Illustration:'✏️',Sculpture:'🗿','Short Story':'📖','Novel Excerpt':'📚',Essay:'📝',Article:'📰',Memoir:'📔','Creative Nonfiction':'📓',Editorial:'👗',Lookbook:'💄','Fashion Essay':'✒️','Style Journal':'📒','Design Story':'🪡' };
+    function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+    /* ── Publish dispatcher — reads by specific ID ── */
+    function publishWork() {
+      const session = LS.getSession();
+
+      /* ── ARTWORK ── */
+      if (currentTab === 'art') {
+        const title = document.getElementById('art-title')?.value.trim() || '';
+        const cat   = document.getElementById('art-cat')?.value           || 'Painting';
+        const desc  = document.getElementById('art-desc')?.value.trim()  || '';
+        if (!title) { showToast('Please add a title for your artwork ✕', true); return; }
+        if (!desc)  { showToast('Please write your artist statement ✕',  true); return; }
+        const artwork = {
+          id    : uid(),
+          image : uploadedImages.art || null,
+          emoji : EMOJIS[cat] || '🎨',
+          bg    : 'av1',
+          cat, title,
+          author: session?.name || 'Anonymous',
+          desc,
+          type  : cat,
+          likes : 0,
+          date  : new Date().toLocaleDateString()
+        };
+        const arts = LS.getArtworks(); arts.unshift(artwork); LS.saveArtworks(arts);
+        if (session) trackUserWork(session.email, { id: artwork.id, type:'Artwork', cat, title, date: artwork.date, image: artwork.image });
+        showSuccess('gallery.html');
+
+      /* ── LITERATURE ── */
+      } else if (currentTab === 'lit') {
+        const title = document.getElementById('lit-title')?.value.trim() || '';
+        const genre = document.getElementById('lit-genre')?.value         || 'Short Story';
+        const body  = document.getElementById('lit-body')?.value.trim()  || '';
+        const about = document.getElementById('lit-about')?.value.trim() || '';
+        if (!title) { showToast('Please add a title ✕', true); return; }
+        if (!body)  { showToast('Please write your piece ✕', true); return; }
+        const piece = {
+          id    : uid(),
+          image : uploadedImages.lit || null,
+          genre, title,
+          author: session?.name || 'Anonymous',
+          body, about,
+          date  : new Date().toLocaleDateString()
+        };
+        const lits = LS.getLiterature(); lits.unshift(piece); LS.saveLiterature(lits);
+        if (session) trackUserWork(session.email, { id: piece.id, type:'Literature', cat: genre, title, date: piece.date, image: piece.image });
+        showSuccess('literature.html');
+
+      /* ── FASHION ── */
+      } else if (currentTab === 'fashion') {
+        const title  = document.getElementById('fashion-title')?.value.trim()  || '';
+        const cat    = document.getElementById('fashion-cat')?.value            || 'Editorial';
+        const desc   = document.getElementById('fashion-desc')?.value.trim()   || '';
+        const season = document.getElementById('fashion-season')?.value.trim() || '';
+        const tags   = document.getElementById('fashion-tags')?.value.trim()   || '';
+        if (!title) { showToast('Please add a title for your editorial ✕', true); return; }
+        if (!desc)  { showToast('Please write the story behind it ✕',      true); return; }
+        const fashionItem = {
+          id    : uid(),
+          image : uploadedImages.fashion || null,
+          emoji : EMOJIS[cat] || '👗',
+          bg    : 'edbg1',
+          cat, title,
+          author: session?.name || 'Anonymous',
+          desc, season, tags,
+          date  : new Date().toLocaleDateString()
+        };
+        const fashs = LS.getFashion(); fashs.unshift(fashionItem); LS.saveFashion(fashs);
+        if (session) trackUserWork(session.email, { id: fashionItem.id, type:'Fashion', cat, title, date: fashionItem.date, image: fashionItem.image });
+        showSuccess('fashion.html');
+
+      /* ── POETRY ── */
+      } else if (currentTab === 'poem') {
+        const title    = document.getElementById('poem-title')?.value.trim() || 'Untitled';
+        const inspired = document.getElementById('poem-inspo')?.value.trim() || '';
+        const body     = document.getElementById('poem-body')?.value.trim()  || '';
+        if (!body) { showToast('Please write your poem first ✕', true); return; }
+        const poem = {
+          id    : uid(),
+          image : uploadedImages.poem || null,
+          title, inspired, body,
+          author: session?.name || 'Anonymous Poet',
+          likes : 0,
+          date  : new Date().toLocaleDateString()
+        };
+        const poems = LS.getPoetry(); poems.unshift(poem); LS.savePoetry(poems);
+        if (session) trackUserWork(session.email, { id: poem.id, type:'Poetry', cat:'Poem', title, date: poem.date, image: poem.image });
+        showSuccess('poetry.html');
+      }
+    }
+
+    /* ── Track work in user's profile ── */
+    function trackUserWork(email, work) {
+      const existing = LS.getUserWorks(email);
+      existing.unshift(work);
+      LS.saveUserWorks(email, existing);
+    }
+
+    /* ── Show success banner + link to right page ── */
+    function showSuccess(redirectPage) {
+      document.querySelectorAll('.upload-form').forEach(f => f.style.display = 'none');
+      document.querySelector('.type-tabs').style.display   = 'none';
+      document.querySelector('.page-sub').style.display    = 'none';
+      const msg = document.getElementById('successMsg');
+      /* update the "View" button link dynamically */
+      const primaryBtn = msg.querySelector('.sb-primary');
+      if (primaryBtn) primaryBtn.href = redirectPage;
+      msg.classList.add('show');
+      msg.scrollIntoView({ behavior:'smooth' });
+      showToast('Your work is now live! ✦');
+    }
+
+    /* ── Show signed-in name in nav ── */
+    const session = LS.getSession();
+    if (session) {
+      const navAuth = document.querySelector('.nav-auth');
+      if (navAuth) navAuth.innerHTML = `<a href="profile.html" style="color:rgba(245,236,215,0.7);text-decoration:none;font-size:.68rem;letter-spacing:.2em;">👤 ${session.name.split(' ')[0]}</a>`;
+    }
+  </script>
+</body>
+</html>

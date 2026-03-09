@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VELVET INK — Art · Literature · Fashion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;700;900&family=Raleway:wght@200;300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --cherry: #8B0000;
+      --cherry-light: #C0392B;
+      --cherry-glow: #DC143C;
+      --midnight: #0A0A1A;
+      --midnight-blue: #0D1B3E;
+      --deep-blue: #1A1A3E;
+      --gold: #B8860B;
+      --gold-light: #DAA520;
+      --cream: #F5ECD7;
+      --muted: #8A7A6A;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--midnight);
+      color: var(--cream);
+      font-family: 'Raleway', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom Cursor */
+    .cursor {
+      position: fixed; width: 12px; height: 12px;
+      background: var(--cherry-glow); border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease, background 0.2s;
+      mix-blend-mode: difference;
+    }
+    .cursor-trail {
+      position: fixed; width: 30px; height: 30px;
+      border: 1px solid var(--cherry-glow); border-radius: 50%;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: all 0.3s ease;
+      opacity: 0.5;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 1000;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.5rem 4rem;
+      background: rgba(10,10,26,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(139,0,0,0.3);
+    }
+
+    .logo {
+      font-family: 'Cinzel', serif;
+      font-size: 1.6rem; font-weight: 900;
+      letter-spacing: 0.2em;
+      color: var(--cream);
+      text-decoration: none;
+    }
+    .logo span { color: var(--cherry-glow); }
+
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      color: var(--cream); text-decoration: none;
+      font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase;
+      font-weight: 300; transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1px; background: var(--cherry-glow);
+      transition: width 0.3s;
+    }
+    .nav-links a:hover { color: var(--cherry-glow); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-auth { display: flex; gap: 1rem; }
+    .btn-outline {
+      padding: 0.5rem 1.5rem; border: 1px solid var(--cherry);
+      color: var(--cream); background: transparent; cursor: none;
+      font-family: 'Raleway', sans-serif; font-size: 0.75rem;
+      letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none;
+      transition: all 0.3s;
+    }
+    .btn-outline:hover { background: var(--cherry); }
+    .btn-solid {
+      padding: 0.5rem 1.5rem; border: 1px solid var(--cherry-glow);
+      color: var(--midnight); background: var(--cherry-glow); cursor: none;
+      font-family: 'Raleway', sans-serif; font-size: 0.75rem;
+      letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none;
+      transition: all 0.3s;
+    }
+    .btn-solid:hover { background: var(--cherry); border-color: var(--cherry); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh; position: relative;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(139,0,0,0.25) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(13,27,62,0.8) 0%, transparent 60%),
+        radial-gradient(ellipse at 60% 80%, rgba(139,0,0,0.15) 0%, transparent 50%);
+    }
+
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(220,20,60,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(220,20,60,0.05) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      text-align: center; max-width: 900px;
+      padding: 2rem;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.7rem; letter-spacing: 0.5em; text-transform: uppercase;
+      color: var(--cherry-glow); margin-bottom: 2rem;
+      opacity: 0; animation: fadeUp 1s 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(3.5rem, 10vw, 8rem);
+      font-weight: 900; line-height: 0.9;
+      letter-spacing: -0.02em;
+      opacity: 0; animation: fadeUp 1s 0.6s forwards;
+      margin-bottom: 1rem;
+    }
+    .hero-title .line2 {
+      display: block; color: transparent;
+      -webkit-text-stroke: 1px var(--cherry-glow);
+      font-style: italic;
+    }
+
+    .hero-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem; font-style: italic; font-weight: 300;
+      color: rgba(245,236,215,0.7);
+      margin: 2rem auto; max-width: 600px;
+      opacity: 0; animation: fadeUp 1s 0.9s forwards;
+    }
+
+    .hero-cta {
+      display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;
+      margin-top: 3rem;
+      opacity: 0; animation: fadeUp 1s 1.2s forwards;
+    }
+
+    .btn-hero {
+      padding: 1rem 3rem; font-family: 'Raleway', sans-serif;
+      font-size: 0.8rem; letter-spacing: 0.3em; text-transform: uppercase;
+      text-decoration: none; transition: all 0.4s; cursor: none;
+      position: relative; overflow: hidden;
+    }
+    .btn-hero-primary {
+      background: var(--cherry-glow); color: #fff;
+      border: 1px solid var(--cherry-glow);
+    }
+    .btn-hero-primary:hover { background: transparent; color: var(--cherry-glow); }
+    .btn-hero-secondary {
+      background: transparent; color: var(--cream);
+      border: 1px solid rgba(245,236,215,0.4);
+    }
+    .btn-hero-secondary:hover { border-color: var(--cream); background: rgba(245,236,215,0.05); }
+
+    /* Floating Orbs */
+    .orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); pointer-events: none;
+      animation: float 8s ease-in-out infinite;
+    }
+    .orb1 { width: 400px; height: 400px; background: rgba(139,0,0,0.2); top: 10%; left: -10%; animation-delay: 0s; }
+    .orb2 { width: 300px; height: 300px; background: rgba(13,27,62,0.4); bottom: 10%; right: -5%; animation-delay: -3s; }
+    .orb3 { width: 200px; height: 200px; background: rgba(220,20,60,0.1); top: 60%; left: 40%; animation-delay: -6s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-30px) scale(1.05); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* MARQUEE */
+    .marquee-wrap {
+      background: var(--cherry); padding: 0.8rem 0; overflow: hidden;
+      position: relative;
+    }
+    .marquee-track {
+      display: flex; white-space: nowrap;
+      animation: marquee 20s linear infinite;
+    }
+    .marquee-track span {
+      font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase;
+      padding: 0 3rem; color: rgba(255,255,255,0.9);
+    }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* SECTIONS */
+    section { padding: 8rem 4rem; }
+
+    .section-label {
+      font-size: 0.65rem; letter-spacing: 0.5em; text-transform: uppercase;
+      color: var(--cherry-glow); margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Cinzel', serif; font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 400; line-height: 1.1; margin-bottom: 1.5rem;
+    }
+
+    /* FEATURES */
+    .features {
+      background: linear-gradient(180deg, var(--midnight) 0%, var(--midnight-blue) 100%);
+    }
+
+    .features-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 2px; margin-top: 4rem;
+    }
+
+    .feature-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(139,0,0,0.2);
+      padding: 3rem 2.5rem;
+      transition: all 0.4s; position: relative; overflow: hidden;
+    }
+    .feature-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(220,20,60,0.05) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .feature-card:hover { border-color: rgba(220,20,60,0.5); transform: translateY(-4px); }
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-num {
+      font-family: 'Cinzel', serif; font-size: 4rem; font-weight: 900;
+      color: rgba(220,20,60,0.15); line-height: 1;
+      margin-bottom: 1.5rem;
+    }
+    .feature-icon { font-size: 2rem; margin-bottom: 1.5rem; }
+    .feature-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;
+    }
+    .feature-desc { font-size: 0.85rem; line-height: 1.8; color: rgba(245,236,215,0.6); }
+
+    /* GALLERY PREVIEW */
+    .gallery-preview {
+      background: var(--deep-blue);
+      position: relative; overflow: hidden;
+    }
+    .gallery-preview::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 50%, rgba(139,0,0,0.2) 0%, transparent 70%);
+    }
+
+    .gallery-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 4rem; position: relative; z-index: 2;
+    }
+
+    .gallery-mosaic {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 1rem; position: relative; z-index: 2;
+    }
+
+    .mosaic-card {
+      background: rgba(10,10,26,0.8); border: 1px solid rgba(139,0,0,0.2);
+      overflow: hidden; position: relative; cursor: none;
+      transition: all 0.4s;
+    }
+    .mosaic-card:hover { border-color: var(--cherry-glow); }
+    .mosaic-card:hover .card-overlay { opacity: 1; }
+
+    .mosaic-card:nth-child(1) { grid-row: span 2; min-height: 500px; }
+    .mosaic-card:nth-child(2), .mosaic-card:nth-child(3) { min-height: 240px; }
+
+    .card-art {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5rem; position: absolute; inset: 0;
+    }
+    .card-bg1 { background: linear-gradient(135deg, #1a0a0a 0%, #3d0a0a 100%); }
+    .card-bg2 { background: linear-gradient(135deg, #0a0a1a 0%, #0a1a3d 100%); }
+    .card-bg3 { background: linear-gradient(135deg, #1a0d00 0%, #3d2200 100%); }
+    .card-bg4 { background: linear-gradient(135deg, #0d1a0d 0%, #0a3d1a 100%); }
+
+    .card-overlay {
+      position: absolute; inset: 0; background: rgba(139,0,0,0.7);
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 2rem; opacity: 0; transition: opacity 0.4s;
+    }
+    .card-category {
+      font-size: 0.6rem; letter-spacing: 0.4em; text-transform: uppercase;
+      color: rgba(255,255,255,0.7); margin-bottom: 0.5rem;
+    }
+    .card-title-hover {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem; font-weight: 600;
+    }
+
+    /* ABOUT */
+    .about {
+      background: linear-gradient(180deg, var(--midnight-blue) 0%, var(--midnight) 100%);
+    }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center;
+    }
+    .about-text p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem; line-height: 2; font-weight: 300;
+      color: rgba(245,236,215,0.8); margin-bottom: 1.5rem;
+    }
+
+    .about-visual {
+      position: relative; height: 500px;
+    }
+    .about-box {
+      position: absolute; border: 1px solid rgba(139,0,0,0.4);
+      transition: all 3s ease-in-out;
+    }
+    .about-box1 { inset: 0; background: linear-gradient(135deg, rgba(139,0,0,0.1), transparent); animation: boxPulse 4s ease-in-out infinite; }
+    .about-box2 { inset: 30px; border-color: rgba(13,27,62,0.6); background: rgba(13,27,62,0.2); animation: boxPulse 4s ease-in-out infinite 1s; }
+    .about-box3 { inset: 60px; border-color: rgba(220,20,60,0.3); display: flex; align-items: center; justify-content: center; }
+    .about-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem; font-style: italic; font-weight: 300;
+      text-align: center; padding: 2rem; color: rgba(245,236,215,0.9);
+      line-height: 1.8;
+    }
+    @keyframes boxPulse { 0%,100% { opacity: 0.6; } 50% { opacity: 1; } }
+
+    /* STATS */
+    .stats {
+      background: var(--cherry); padding: 4rem;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 2rem; text-align: center;
+    }
+    .stat-num {
+      font-family: 'Cinzel', serif; font-size: 3rem; font-weight: 900;
+      line-height: 1;
+    }
+    .stat-label { font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.8; margin-top: 0.5rem; }
+
+    /* FOOTER */
+    footer {
+      background: #050508; padding: 4rem;
+      border-top: 1px solid rgba(139,0,0,0.3);
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    .footer-brand { font-family: 'Cinzel', serif; font-size: 1.5rem; font-weight: 900; margin-bottom: 1rem; }
+    .footer-brand span { color: var(--cherry-glow); }
+    .footer-tagline { font-size: 0.8rem; color: rgba(245,236,215,0.4); line-height: 1.7; }
+    .footer-heading { font-size: 0.65rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--cherry-glow); margin-bottom: 1.5rem; }
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 0.7rem; }
+    .footer-links a { color: rgba(245,236,215,0.5); text-decoration: none; font-size: 0.82rem; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--cream); }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .footer-bottom p { font-size: 0.75rem; color: rgba(245,236,215,0.3); }
+
+    /* Scroll indicator */
+    .scroll-indicator {
+      position: absolute; bottom: 3rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      opacity: 0; animation: fadeUp 1s 1.8s forwards;
+    }
+    .scroll-indicator span { font-size: 0.6rem; letter-spacing: 0.4em; text-transform: uppercase; color: rgba(245,236,215,0.4); }
+    .scroll-line { width: 1px; height: 60px; background: linear-gradient(to bottom, rgba(220,20,60,0.8), transparent); animation: scrollLine 2s ease-in-out infinite; }
+    @keyframes scrollLine { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform: scaleY(1); transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      section { padding: 5rem 1.5rem; }
+      .features-grid { grid-template-columns: 1fr; }
+      .gallery-mosaic { grid-template-columns: 1fr; }
+      .mosaic-card:nth-child(1) { grid-row: span 1; min-height: 250px; }
+      .about-grid { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-trail" id="cursorTrail"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="logo">VELVET<span>·</span>INK</a>
+    <ul class="nav-links">
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="literature.html">Literature</a></li>
+      <li><a href="fashion.html">Fashion</a></li>
+      <li><a href="poetry.html">Poetry</a></li>
+      <li><a href="community.html">Community</a></li>
+    </ul>
+    <div class="nav-auth">
+      <a href="login.html" class="btn-outline">Sign In</a>
+      <a href="register.html" class="btn-solid">Join</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+
+    <div class="hero-content">
+      <p class="hero-eyebrow">✦ Where Creativity Meets Soul ✦</p>
+      <h1 class="hero-title">
+        VELVET<br>
+        <span class="line2">INK</span>
+      </h1>
+      <p class="hero-sub">A sanctuary for artists, writers, and visionaries — where every brushstroke tells a story and every word paints a world.</p>
+      <div class="hero-cta">
+        <a href="gallery.html" class="btn-hero btn-hero-primary">Explore Artworks</a>
+        <a href="register.html" class="btn-hero btn-hero-secondary">Share Your Work</a>
+      </div>
+    </div>
+
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span>Art</span><span>✦</span><span>Literature</span><span>✦</span><span>Fashion</span><span>✦</span>
+      <span>Poetry</span><span>✦</span><span>Expression</span><span>✦</span><span>Identity</span><span>✦</span>
+      <span>Vision</span><span>✦</span><span>Craft</span><span>✦</span><span>Soul</span><span>✦</span>
+      <span>Art</span><span>✦</span><span>Literature</span><span>✦</span><span>Fashion</span><span>✦</span>
+      <span>Poetry</span><span>✦</span><span>Expression</span><span>✦</span><span>Identity</span><span>✦</span>
+      <span>Vision</span><span>✦</span><span>Craft</span><span>✦</span><span>Soul</span><span>✦</span>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <div style="text-align:center; max-width:600px; margin:0 auto 1rem;">
+      <p class="section-label">What We Offer</p>
+      <h2 class="section-title">A Platform Built for <em>Creative Souls</em></h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-num">01</div>
+        <div class="feature-icon">🎨</div>
+        <h3 class="feature-title">Art Gallery</h3>
+        <p class="feature-desc">Upload your paintings, illustrations, photographs, and mixed media. Share the meaning behind each piece — let your art speak beyond canvas.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">02</div>
+        <div class="feature-icon">📖</div>
+        <h3 class="feature-title">Literature Hub</h3>
+        <p class="feature-desc">Publish articles, books, essays, and short stories. Build your literary legacy one word at a time in our curated reading space.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">03</div>
+        <div class="feature-icon">👗</div>
+        <h3 class="feature-title">Fashion Magazine</h3>
+        <p class="feature-desc">Share your fashion editorials, style journals, and design stories. Fashion is art — let the world see your aesthetic vision unfold.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">04</div>
+        <div class="feature-icon">✍️</div>
+        <h3 class="feature-title">Poetry Corner</h3>
+        <p class="feature-desc">Write poetry inspired by any artwork in our gallery. Let someone's painting become the muse for your next verse.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">05</div>
+        <div class="feature-icon">💌</div>
+        <h3 class="feature-title">Connect & Collaborate</h3>
+        <p class="feature-desc">Admire someone's work? Reach out directly. Build creative friendships, find collaborators, and grow your audience organically.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">06</div>
+        <div class="feature-icon">🔐</div>
+        <h3 class="feature-title">Personal Profile</h3>
+        <p class="feature-desc">Your own curated space — showcase all your works across art, writing, and fashion. Your portfolio, your identity, your story.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY PREVIEW -->
+  <section class="gallery-preview">
+    <div class="gallery-header">
+      <div>
+        <p class="section-label">Featured Works</p>
+        <h2 class="section-title">From Our <em>Community</em></h2>
+      </div>
+      <a href="gallery.html" class="btn-outline">View All →</a>
+    </div>
+    <div class="gallery-mosaic">
+      <div class="mosaic-card card-bg1">
+        <div class="card-art">🌹</div>
+        <div class="card-overlay">
+          <span class="card-category">Painting · Oil on Canvas</span>
+          <p class="card-title-hover">Crimson Solitude</p>
+        </div>
+      </div>
+      <div class="mosaic-card card-bg2">
+        <div class="card-art">🌊</div>
+        <div class="card-overlay">
+          <span class="card-category">Digital Art</span>
+          <p class="card-title-hover">Oceanic Dreams</p>
+        </div>
+      </div>
+      <div class="mosaic-card card-bg3">
+        <div class="card-art">🌙</div>
+        <div class="card-overlay">
+          <span class="card-category">Photography</span>
+          <p class="card-title-hover">Midnight Reverie</p>
+        </div>
+      </div>
+      <div class="mosaic-card card-bg4" style="grid-column: 2 / 4;">
+        <div class="card-art">🦋</div>
+        <div class="card-overlay">
+          <span class="card-category">Mixed Media</span>
+          <p class="card-title-hover">Metamorphosis</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about">
+    <div class="about-grid">
+      <div class="about-text">
+        <p class="section-label">Our Philosophy</p>
+        <h2 class="section-title" style="margin-bottom:2rem;">Art is the Language <em>the World Speaks</em></h2>
+        <p>At Velvet Ink, we believe that creativity is not a luxury — it is a necessity. Every artist deserves a stage, every writer deserves a reader, every dreamer deserves a community.</p>
+        <p>We built this space as a bridge between disciplines — where a painter's canvas can inspire a poet's verse, where a fashion designer's vision can become a writer's story.</p>
+        <p>This is your sanctuary. Upload, share, connect, and create without limits.</p>
+        <a href="register.html" class="btn-hero btn-hero-primary" style="display:inline-block; margin-top:2rem;">Begin Your Journey</a>
+      </div>
+      <div class="about-visual">
+        <div class="about-box about-box1"></div>
+        <div class="about-box about-box2"></div>
+        <div class="about-box about-box3">
+          <div class="about-quote">"Every artist dips their brush in their own soul and paints their own nature into their pictures."<br><small style="font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--cherry-glow); display:block; margin-top:1rem;">— Henry Ward Beecher</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div>
+      <div class="stat-num">2.4K+</div>
+      <div class="stat-label">Artworks Shared</div>
+    </div>
+    <div>
+      <div class="stat-num">840+</div>
+      <div class="stat-label">Writers & Poets</div>
+    </div>
+    <div>
+      <div class="stat-num">310+</div>
+      <div class="stat-label">Fashion Stories</div>
+    </div>
+    <div>
+      <div class="stat-num">5.1K+</div>
+      <div class="stat-label">Connections Made</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">VELVET<span>·</span>INK</div>
+        <p class="footer-tagline">A curated platform blending art, literature, and fashion — built for those who create from the soul.</p>
+      </div>
+      <div>
+        <p class="footer-heading">Explore</p>
+        <ul class="footer-links">
+          <li><a href="gallery.html">Art Gallery</a></li>
+          <li><a href="literature.html">Literature</a></li>
+          <li><a href="fashion.html">Fashion</a></li>
+          <li><a href="poetry.html">Poetry</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-heading">Account</p>
+        <ul class="footer-links">
+          <li><a href="login.html">Sign In</a></li>
+          <li><a href="register.html">Create Account</a></li>
+          <li><a href="profile.html">My Profile</a></li>
+          <li><a href="upload.html">Upload Work</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-heading">Community</p>
+        <ul class="footer-links">
+          <li><a href="community.html">Discover Artists</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Velvet Ink. All rights reserved.</p>
+      <p>Made with ❤️ for creative souls</p>
+    </div>
+  </footer>
+
+  <script>
+    /* ── Cursor ── */
+    const cursor = document.getElementById('cursor');
+    const trail  = document.getElementById('cursorTrail');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+      setTimeout(() => { trail.style.left = e.clientX + 'px'; trail.style.top = e.clientY + 'px'; }, 80);
+    });
+
+    /* ── localStorage helpers ── */
+    const LS = {
+      getSession  : ()  => JSON.parse(localStorage.getItem('vi_session')    || 'null'),
+      getArtworks : ()  => JSON.parse(localStorage.getItem('vi_artworks')   || '[]'),
+      getLiterature:()  => JSON.parse(localStorage.getItem('vi_literature') || '[]'),
+      getFashion  : ()  => JSON.parse(localStorage.getItem('vi_fashion')    || '[]'),
+      getPoetry   : ()  => JSON.parse(localStorage.getItem('vi_poetry')     || '[]'),
+      getUsers    : ()  => JSON.parse(localStorage.getItem('vi_users')      || '[]'),
+      getConnections:() => JSON.parse(localStorage.getItem('vi_connections')|| '[]'),
+      clearSession: ()  => localStorage.removeItem('vi_session'),
+    };
+
+    /* ── Update nav based on session ── */
+    const session = LS.getSession();
+    (function updateNav() {
+      const navAuth = document.querySelector('.nav-auth');
+      if (!navAuth) return;
+      if (session) {
+        navAuth.innerHTML = `
+          <a href="profile.html" class="btn-outline" style="padding:.5rem 1.2rem;border:1px solid rgba(220,20,60,.4);color:var(--cream,#F2E8D5);text-decoration:none;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;">👤 ${session.name.split(' ')[0]}</a>
+          <button onclick="logout()" class="btn-outline" style="padding:.5rem 1.2rem;border:1px solid rgba(220,20,60,.25);background:transparent;color:rgba(245,236,215,.5);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;">Sign Out</button>`;
+      }
+    })();
+
+    function logout() { LS.clearSession(); window.location.reload(); }
+
+    /* ── Live stats from localStorage ── */
+    (function updateStats() {
+      const arts  = LS.getArtworks().length  + 8;   /* 8 = seed artworks */
+      const users = LS.getUsers().length     + 840;  /* base community */
+      const poems = LS.getPoetry().length    + 310;
+      const conns = LS.getConnections().length + 5100;
+
+      const statEls = document.querySelectorAll('.stat-num');
+      const targets  = [arts, users, poems, conns];
+      statEls.forEach((el, i) => {
+        const target = targets[i];
+        if (target === undefined) return;
+        let current = 0;
+        const step  = Math.max(1, Math.floor(target / 60));
+        const timer = setInterval(() => {
+          current = Math.min(current + step, target);
+          el.textContent = target >= 1000 ? (current / 1000).toFixed(1) + 'K+' : current + '+';
+          if (current >= target) clearInterval(timer);
+        }, 20);
+      });
+    })();
+
+    /* ── Scroll reveal ── */
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.feature-card, .mosaic-card').forEach(el => {
+      el.style.opacity    = '0';
+      el.style.transform  = 'translateY(20px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease, border-color 0.4s';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

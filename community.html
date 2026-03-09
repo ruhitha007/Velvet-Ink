@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Community — VELVET INK</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;700;900&family=Raleway:wght@200;300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --cherry:#8B0000; --cherry-glow:#DC143C; --midnight:#03000A; --bg:#04000D; --teal:#003028; --cream:#F5ECD7; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:var(--bg); color:var(--cream); font-family:'Raleway',sans-serif; cursor:none; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; pointer-events:none; background:radial-gradient(ellipse at 80% 20%, rgba(0,48,40,0.3) 0%, transparent 50%), radial-gradient(ellipse at 20% 80%, rgba(139,0,0,0.2) 0%, transparent 50%); }
+    .cursor { position:fixed; width:10px; height:10px; background:var(--cherry-glow); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); }
+    nav { position:fixed; top:0; width:100%; z-index:1000; display:flex; justify-content:space-between; align-items:center; padding:1.5rem 4rem; background:rgba(4,0,13,0.93); backdrop-filter:blur(20px); border-bottom:1px solid rgba(139,0,0,0.2); }
+    .logo { font-family:'Cinzel',serif; font-size:1.4rem; font-weight:900; letter-spacing:0.3em; color:var(--cream); text-decoration:none; }
+    .logo span { color:var(--cherry-glow); }
+    .nav-links { display:flex; gap:2rem; list-style:none; }
+    .nav-links a { color:rgba(245,236,215,0.5); text-decoration:none; font-size:0.75rem; letter-spacing:0.2em; text-transform:uppercase; transition:color 0.2s; }
+    .nav-links a.active { color:var(--cherry-glow); }
+    .nav-links a:hover { color:var(--cream); }
+    .btn-join { padding:0.5rem 1.5rem; border:1px solid var(--cherry-glow); color:var(--cherry-glow); background:transparent; text-decoration:none; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; cursor:none; }
+
+    /* HERO */
+    .comm-hero { padding:12rem 4rem 5rem; }
+    .eyebrow { font-size:0.65rem; letter-spacing:0.5em; text-transform:uppercase; color:var(--cherry-glow); margin-bottom:1rem; }
+    .hero-title { font-family:'Cinzel',serif; font-size:clamp(3rem,8vw,6rem); font-weight:900; line-height:0.9; margin-bottom:2rem; }
+    .hero-title .outline { color:transparent; -webkit-text-stroke:1px rgba(245,236,215,0.2); }
+    .hero-sub { font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-style:italic; color:rgba(245,236,215,0.55); max-width:550px; line-height:1.9; }
+
+    /* SEARCH */
+    .search-bar { padding:2rem 4rem; display:flex; gap:1rem; }
+    .search-input { flex:1; background:rgba(255,255,255,0.02); border:1px solid rgba(139,0,0,0.2); color:var(--cream); padding:0.9rem 1.5rem; font-family:'Raleway',sans-serif; font-size:0.88rem; outline:none; transition:border-color 0.3s; cursor:none; }
+    .search-input:focus { border-color:var(--cherry-glow); }
+    .search-input::placeholder { color:rgba(245,236,215,0.2); }
+    .search-btn { padding:0.9rem 2rem; background:var(--cherry-glow); border:none; color:#fff; font-family:'Raleway',sans-serif; font-size:0.78rem; letter-spacing:0.2em; text-transform:uppercase; cursor:none; transition:all 0.3s; }
+    .search-btn:hover { background:var(--cherry); }
+    .filter-row { padding:0 4rem 2rem; display:flex; gap:0.6rem; flex-wrap:wrap; }
+    .filter-chip { padding:0.4rem 1rem; border:1px solid rgba(139,0,0,0.2); background:transparent; color:rgba(245,236,215,0.45); font-family:'Raleway',sans-serif; font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; cursor:none; transition:all 0.3s; }
+    .filter-chip.active, .filter-chip:hover { background:var(--cherry-glow); border-color:var(--cherry-glow); color:#fff; }
+
+    /* FEATURED CREATORS */
+    .section { padding:0 4rem 5rem; }
+    .section-header { margin-bottom:3rem; }
+    .section-label { font-size:0.65rem; letter-spacing:0.5em; text-transform:uppercase; color:var(--cherry-glow); margin-bottom:0.5rem; }
+    .section-title { font-family:'Cinzel',serif; font-size:2rem; font-weight:400; }
+
+    .creators-featured { display:grid; grid-template-columns:1.5fr 1fr 1fr; gap:1rem; margin-bottom:3rem; }
+    .creator-featured { background:rgba(255,255,255,0.02); border:1px solid rgba(139,0,0,0.15); padding:2.5rem; transition:all 0.3s; cursor:none; }
+    .creator-featured:hover { border-color:var(--cherry-glow); }
+    .cf-avatar { width:70px; height:70px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2rem; margin-bottom:1.2rem; }
+    .av-cherry { background:linear-gradient(135deg,#3d0000,#8B0000); }
+    .av-teal { background:linear-gradient(135deg,#003028,#006050); }
+    .av-purple { background:linear-gradient(135deg,#1a0030,#3d006a); }
+    .cf-name { font-family:'Cinzel',serif; font-size:1rem; font-weight:700; margin-bottom:0.2rem; }
+    .cf-handle { font-size:0.68rem; color:var(--cherry-glow); letter-spacing:0.2em; margin-bottom:0.5rem; }
+    .cf-bio { font-family:'Cormorant Garamond',serif; font-size:0.9rem; font-style:italic; color:rgba(245,236,215,0.55); line-height:1.7; margin-bottom:1.2rem; }
+    .cf-tags { display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:1.2rem; }
+    .cf-tag { font-size:0.58rem; letter-spacing:0.25em; text-transform:uppercase; padding:0.2rem 0.6rem; border:1px solid rgba(139,0,0,0.25); color:rgba(245,236,215,0.4); }
+    .cf-stats { display:flex; gap:1.5rem; }
+    .cf-stat { font-size:0.7rem; color:rgba(245,236,215,0.3); }
+    .cf-stat strong { display:block; font-family:'Cinzel',serif; font-size:1rem; color:var(--cream); }
+    .btn-connect { margin-top:1.5rem; padding:0.6rem 1.5rem; border:1px solid rgba(139,0,0,0.3); background:transparent; color:rgba(245,236,215,0.6); font-family:'Raleway',sans-serif; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; cursor:none; transition:all 0.3s; width:100%; }
+    .btn-connect:hover { background:var(--cherry-glow); border-color:var(--cherry-glow); color:#fff; }
+
+    /* ALL CREATORS GRID */
+    .creators-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; }
+    .creator-card { background:rgba(255,255,255,0.02); border:1px solid rgba(139,0,0,0.12); padding:1.5rem; cursor:none; transition:all 0.3s; }
+    .creator-card:hover { border-color:rgba(220,20,60,0.35); background:rgba(220,20,60,0.03); }
+    .cc-avatar { width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.4rem; margin-bottom:0.8rem; }
+    .cc-name { font-family:'Cinzel',serif; font-size:0.85rem; margin-bottom:0.1rem; }
+    .cc-role { font-size:0.6rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--cherry-glow); margin-bottom:0.6rem; }
+    .cc-bio { font-size:0.75rem; color:rgba(245,236,215,0.4); line-height:1.6; margin-bottom:1rem; }
+    .cc-connect { padding:0.4rem 1rem; border:1px solid rgba(139,0,0,0.2); background:transparent; color:rgba(245,236,215,0.5); font-family:'Raleway',sans-serif; font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; cursor:none; transition:all 0.3s; width:100%; }
+    .cc-connect:hover { background:var(--cherry-glow); border-color:var(--cherry-glow); color:#fff; }
+
+    /* CTA */
+    .join-cta { margin:0 4rem 6rem; padding:4rem; background:linear-gradient(135deg, rgba(139,0,0,0.15), rgba(0,48,40,0.15)); border:1px solid rgba(139,0,0,0.2); text-align:center; position:relative; overflow:hidden; }
+    .join-cta::before { content:'✦'; position:absolute; font-size:20rem; opacity:0.02; top:50%; left:50%; transform:translate(-50%,-50%); font-family:'Cinzel',serif; }
+    .cta-title { font-family:'Cinzel',serif; font-size:2rem; margin-bottom:1rem; }
+    .cta-sub { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-style:italic; color:rgba(245,236,215,0.55); margin-bottom:2rem; }
+    .cta-btn { padding:1rem 3rem; background:var(--cherry-glow); border:none; color:#fff; font-family:'Raleway',sans-serif; font-size:0.8rem; letter-spacing:0.3em; text-transform:uppercase; cursor:none; transition:all 0.3s; text-decoration:none; display:inline-block; }
+    .cta-btn:hover { background:var(--cherry); }
+
+    @media (max-width:900px) { nav{padding:1rem 1.5rem;} .comm-hero,.search-bar,.filter-row,.section{padding-left:1.5rem; padding-right:1.5rem;} .creators-featured{grid-template-columns:1fr;} .creators-grid{grid-template-columns:repeat(2,1fr);} .join-cta{margin:0 1.5rem 4rem;} }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <nav>
+    <a href="index.html" class="logo">VELVET<span>·</span>INK</a>
+    <ul class="nav-links">
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="literature.html">Literature</a></li>
+      <li><a href="fashion.html">Fashion</a></li>
+      <li><a href="poetry.html">Poetry</a></li>
+      <li><a href="community.html" class="active">Community</a></li>
+    </ul>
+    <a href="register.html" class="btn-join">Join Free</a>
+  </nav>
+
+  <div class="comm-hero">
+    <p class="eyebrow">✦ Our Community ✦</p>
+    <h1 class="hero-title">FIND YOUR<br><span class="outline">PEOPLE</span></h1>
+    <p class="hero-sub">Artists, writers, poets, and fashion dreamers — all in one place. Discover creators who move you. Reach out. Collaborate. Create.</p>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" class="search-input" placeholder="Search by name, style, medium..."/>
+    <button class="search-btn">Search</button>
+  </div>
+  <div class="filter-row">
+    <button class="filter-chip active">All Creators</button>
+    <button class="filter-chip">Visual Artists</button>
+    <button class="filter-chip">Writers</button>
+    <button class="filter-chip">Poets</button>
+    <button class="filter-chip">Fashion</button>
+    <button class="filter-chip">Photographers</button>
+  </div>
+
+  <!-- FEATURED -->
+  <div class="section">
+    <div class="section-header">
+      <p class="section-label">This Month's Spotlight</p>
+      <h2 class="section-title">Featured <em style="font-style:italic; color:rgba(245,236,215,0.4);">Creators</em></h2>
+    </div>
+    <div class="creators-featured">
+      <div class="creator-featured">
+        <div class="cf-avatar av-cherry">🌹</div>
+        <p class="cf-name">Aria Blackwood</p>
+        <p class="cf-handle">@aria.creates</p>
+        <p class="cf-bio">"I paint grief because no one else will. Oil on canvas. Darkness as home."</p>
+        <div class="cf-tags"><span class="cf-tag">Painting</span><span class="cf-tag">Dark Art</span><span class="cf-tag">Poet</span></div>
+        <div class="cf-stats"><div class="cf-stat"><strong>18</strong>Works</div><div class="cf-stat"><strong>1.2K</strong>Admirers</div><div class="cf-stat"><strong>64</strong>Poems</div></div>
+        <button class="btn-connect" onclick="alert('Connection request sent to Aria! ✦')">Connect with Aria</button>
+      </div>
+      <div class="creator-featured">
+        <div class="cf-avatar av-teal">🌊</div>
+        <p class="cf-name">Kai Velmira</p>
+        <p class="cf-handle">@kai.inkblot</p>
+        <p class="cf-bio">"Digital sculptor. I build worlds out of pixels and nostalgia."</p>
+        <div class="cf-tags"><span class="cf-tag">Digital</span><span class="cf-tag">Sci-Fi</span></div>
+        <div class="cf-stats"><div class="cf-stat"><strong>34</strong>Works</div><div class="cf-stat"><strong>2.4K</strong>Admirers</div></div>
+        <button class="btn-connect" onclick="alert('Connection request sent to Kai! ✦')">Connect with Kai</button>
+      </div>
+      <div class="creator-featured">
+        <div class="cf-avatar av-purple">✍️</div>
+        <p class="cf-name">Celeste Fontaine</p>
+        <p class="cf-handle">@celeste.writes</p>
+        <p class="cf-bio">"Short stories about the parts of life no one admits they recognize."</p>
+        <div class="cf-tags"><span class="cf-tag">Fiction</span><span class="cf-tag">Essay</span></div>
+        <div class="cf-stats"><div class="cf-stat"><strong>9</strong>Works</div><div class="cf-stat"><strong>876</strong>Readers</div></div>
+        <button class="btn-connect" onclick="alert('Connection request sent to Celeste! ✦')">Connect with Celeste</button>
+      </div>
+    </div>
+
+    <!-- ALL -->
+    <div class="section-header">
+      <p class="section-label">Discover More</p>
+      <h2 class="section-title">The Full <em style="font-style:italic; color:rgba(245,236,215,0.4);">Community</em></h2>
+    </div>
+    <div class="creators-grid" id="creatorsGrid"></div>
+  </div>
+
+  <!-- JOIN CTA -->
+  <div class="join-cta">
+    <h2 class="cta-title">Ready to Share Your Work?</h2>
+    <p class="cta-sub">Join thousands of creative souls who call Velvet Ink home.</p>
+    <a href="register.html" class="cta-btn">Create Your Profile ✦</a>
+  </div>
+
+  <script>
+    document.addEventListener('mousemove', e => { const c = document.getElementById('cursor'); c.style.left = e.clientX+'px'; c.style.top = e.clientY+'px'; });
+
+    /* ── Toast ── */
+    function showToast(msg) {
+      let t = document.getElementById('vi-toast');
+      if (!t) { t = document.createElement('div'); t.id='vi-toast'; t.style.cssText='position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(60px);background:#DC143C;color:#fff;padding:.8rem 2rem;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;transition:transform .35s;z-index:9999;pointer-events:none;border-radius:2px;'; document.body.appendChild(t); }
+      t.textContent = msg; t.style.transform = 'translateX(-50%) translateY(0)';
+      setTimeout(() => t.style.transform = 'translateX(-50%) translateY(60px)', 3000);
+    }
+
+    /* ── localStorage helpers ── */
+    const LS = {
+      getSession   : ()    => JSON.parse(localStorage.getItem('vi_session')     || 'null'),
+      getUsers     : ()    => JSON.parse(localStorage.getItem('vi_users')       || '[]'),
+      getConnections:()    => JSON.parse(localStorage.getItem('vi_connections') || '[]'),
+      saveConnections: arr => localStorage.setItem('vi_connections', JSON.stringify(arr)),
+      getMessages  : ()    => JSON.parse(localStorage.getItem('vi_messages')    || '[]'),
+      saveMessages : arr   => localStorage.setItem('vi_messages',  JSON.stringify(arr)),
+    };
+
+    const session = LS.getSession();
+
+    /* ── Update nav if logged in ── */
+    if (session) {
+      const navAuth = document.querySelector('.nav-auth');
+      if (navAuth) navAuth.innerHTML = `<a href="profile.html" style="color:rgba(245,236,215,.7);text-decoration:none;font-size:.68rem;letter-spacing:.2em;">👤 ${session.name.split(' ')[0]}</a>`;
+    }
+
+    /* ── Static demo creators ── */
+    const DEMO_CREATORS = [
+      { id:'dc1', avatar:'🎨', bg:'av-cherry',  name:'Mira Cassell',    role:'Painter',       bio:'Abstract expressionist. Colors as language.',   type:'Artist'  },
+      { id:'dc2', avatar:'📷', bg:'av-teal',    name:'Eli Nakamura',    role:'Photographer',  bio:'Storm chaser. Natural light purist.',            type:'Artist'  },
+      { id:'dc3', avatar:'👗', bg:'av-purple',  name:'Valentina Rossi', role:'Fashion Writer',bio:'Dark couture. Fashion as philosophy.',            type:'Fashion' },
+      { id:'dc4', avatar:'📖', bg:'av-cherry',  name:'Rumi Okafor',     role:'Essayist',      bio:'Writing at the edges of culture.',               type:'Writer'  },
+      { id:'dc5', avatar:'🎭', bg:'av-teal',    name:'Soraya West',     role:'Mixed Media',   bio:'Clay, resin, and ancestor memory.',              type:'Artist'  },
+      { id:'dc6', avatar:'🌸', bg:'av-purple',  name:'Nadia Osei',      role:'Digital Artist',bio:'Surrealism meets corporate critique.',            type:'Artist'  },
+      { id:'dc7', avatar:'✒️', bg:'av-cherry',  name:'Felix Adeyemi',   role:'Novelist',      bio:'Long-form dark fiction. Always winter.',         type:'Writer'  },
+      { id:'dc8', avatar:'🦋', bg:'av-teal',    name:'Rio Santos',      role:'Mixed Media',   bio:'Collage as emotional archaeology.',              type:'Artist'  },
+    ];
+
+    /* ── Merge demo + registered users ── */
+    function getAllCreators() {
+      const registered = LS.getUsers().map(u => ({
+        id: u.id, avatar: { Artist:'🎨', Writer:'✍️', Fashion:'👗' }[u.role] || '🎨',
+        bg: ['av-cherry','av-teal','av-purple'][Math.abs(u.name.charCodeAt(0)) % 3],
+        name: u.name, role: u.role || 'Creative', bio: u.bio || 'Member of Velvet Ink.', type: u.role
+      }));
+      /* avoid duplicating if someone registered with a demo name */
+      const regNames = new Set(registered.map(r => r.name));
+      const demos    = DEMO_CREATORS.filter(d => !regNames.has(d.name));
+      return [...registered, ...demos];
+    }
+
+    let allCreators = getAllCreators();
+
+    function renderCreators(filter = 'all', query = '') {
+      let list = allCreators;
+      if (filter !== 'all') list = list.filter(c => c.type === filter || c.role.toLowerCase().includes(filter.toLowerCase()));
+      if (query) list = list.filter(c => c.name.toLowerCase().includes(query) || c.role.toLowerCase().includes(query) || c.bio.toLowerCase().includes(query));
+      const connections = LS.getConnections();
+      const grid = document.getElementById('creatorsGrid');
+      if (!list.length) { grid.innerHTML = '<p style="color:rgba(245,236,215,.3);padding:2rem;font-style:italic;grid-column:1/-1;">No creators found matching that search.</p>'; return; }
+      grid.innerHTML = list.map(c => `
+        <div class="creator-card">
+          <div class="cc-avatar ${c.bg}">${c.avatar}</div>
+          <p class="cc-name">${c.name}</p>
+          <p class="cc-role">${c.role}</p>
+          <p class="cc-bio">${c.bio}</p>
+          <button class="cc-connect ${connections.includes(c.id) ? 'connected' : ''}"
+            onclick="connectWith('${c.id}','${c.name}',this)"
+            style="${connections.includes(c.id) ? 'background:rgba(220,20,60,.15);color:#DC143C;border-color:rgba(220,20,60,.4);' : ''}">
+            ${connections.includes(c.id) ? '✓ Connected' : 'Connect'}
+          </button>
+        </div>
+      `).join('');
+    }
+
+    /* ── Connect with a creator (saved to localStorage) ── */
+    function connectWith(id, name, btn) {
+      if (!session) { showToast('Please sign in to connect →'); setTimeout(()=>window.location.href='login.html',1400); return; }
+      const connections = LS.getConnections();
+      if (connections.includes(id)) { showToast('Already connected with ' + name + ' ✦'); return; }
+      connections.push(id);
+      LS.saveConnections(connections);
+      /* store message */
+      const msgs = LS.getMessages();
+      msgs.push({ from: session.name, to: name, msg: 'Connection request sent!', date: new Date().toLocaleDateString() });
+      LS.saveMessages(msgs);
+      btn.textContent = '✓ Connected';
+      btn.style.cssText += 'background:rgba(220,20,60,.15);color:#DC143C;border-color:rgba(220,20,60,.4);';
+      showToast('Connected with ' + name + '! ✦');
+    }
+
+    /* ── Search ── */
+    const searchInput = document.querySelector('.search-input');
+    if (searchInput) {
+      searchInput.addEventListener('input', function() {
+        const q = this.value.trim().toLowerCase();
+        const active = document.querySelector('.filter-chip.active');
+        const filter = active ? active.dataset.filter || 'all' : 'all';
+        renderCreators(filter, q);
+      });
+    }
+
+    /* ── Filter chips ── */
+    document.querySelectorAll('.filter-chip').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+        renderCreators(this.dataset.filter || 'all', query);
+      });
+    });
+
+    renderCreators();
+  </script>
+</body>
+</html>

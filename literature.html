@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Literature — VELVET INK</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;700;900&family=Raleway:wght@200;300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --cherry:#8B0000; --cherry-glow:#DC143C;
+      --midnight:#050510; --ink:#0A0520;
+      --cream:#F5ECD7; --parchment:#E8D8B8;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: var(--ink);
+      color: var(--cream); font-family: 'Raleway', sans-serif;
+      cursor: none; overflow-x: hidden;
+    }
+    body::before {
+      content:''; position:fixed; inset:0; pointer-events:none;
+      background:
+        radial-gradient(ellipse at 100% 0%, rgba(13,27,62,0.6) 0%, transparent 50%),
+        radial-gradient(ellipse at 0% 100%, rgba(5,5,30,0.8) 0%, transparent 60%);
+    }
+    .cursor { position:fixed; width:10px; height:10px; background:var(--cherry-glow); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); mix-blend-mode:difference; }
+
+    nav {
+      position:fixed; top:0; width:100%; z-index:1000;
+      display:flex; justify-content:space-between; align-items:center;
+      padding:1.5rem 4rem;
+      background:rgba(5,5,16,0.92); backdrop-filter:blur(20px);
+      border-bottom:1px solid rgba(13,27,62,0.5);
+    }
+    .logo { font-family:'Cinzel',serif; font-size:1.4rem; font-weight:900; letter-spacing:0.3em; color:var(--cream); text-decoration:none; }
+    .logo span { color:var(--cherry-glow); }
+    .nav-links { display:flex; gap:2rem; list-style:none; }
+    .nav-links a { color:rgba(245,236,215,0.5); text-decoration:none; font-size:0.75rem; letter-spacing:0.2em; text-transform:uppercase; transition:color 0.2s; }
+    .nav-links a.active { color:var(--cherry-glow); }
+    .nav-links a:hover { color:var(--cream); }
+    .btn-write { padding:0.5rem 1.5rem; background:var(--cherry-glow); color:#fff; text-decoration:none; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; transition:all 0.3s; cursor:none; }
+    .btn-write:hover { background:var(--cherry); }
+
+    /* HERO */
+    .lit-hero {
+      padding:12rem 4rem 5rem; position:relative;
+    }
+    .hero-eyebrow { font-size:0.65rem; letter-spacing:0.5em; text-transform:uppercase; color:var(--cherry-glow); margin-bottom:1rem; }
+    .hero-title { font-family:'Cinzel',serif; font-size:clamp(3rem,9vw,7rem); font-weight:900; line-height:0.9; margin-bottom:2rem; }
+    .hero-title .outline { color:transparent; -webkit-text-stroke:1px rgba(245,236,215,0.3); }
+    .hero-quote { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-style:italic; font-weight:300; color:rgba(245,236,215,0.6); max-width:600px; line-height:1.9; }
+
+    /* FEATURED */
+    .featured { padding:0 4rem 5rem; }
+    .section-label { font-size:0.65rem; letter-spacing:0.5em; text-transform:uppercase; color:var(--cherry-glow); margin-bottom:1rem; }
+    .section-title { font-family:'Cinzel',serif; font-size:2rem; font-weight:400; margin-bottom:3rem; }
+    .section-title em { font-style:italic; color:rgba(245,236,215,0.5); }
+
+    .featured-grid { display:grid; grid-template-columns:2fr 1fr; gap:1.5rem; }
+    .featured-main {
+      background:rgba(255,255,255,0.02); border:1px solid rgba(13,27,62,0.6);
+      padding:3rem; position:relative; overflow:hidden; cursor:none;
+      transition:border-color 0.3s;
+    }
+    .featured-main:hover { border-color:var(--cherry-glow); }
+    .featured-main::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:var(--cherry-glow); }
+
+    .book-genre { font-size:0.6rem; letter-spacing:0.4em; text-transform:uppercase; color:var(--cherry-glow); margin-bottom:0.8rem; }
+    .book-title { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:600; line-height:1.2; margin-bottom:0.5rem; }
+    .book-author { font-size:0.8rem; color:rgba(245,236,215,0.45); margin-bottom:1.5rem; }
+    .book-excerpt { font-family:'Cormorant Garamond',serif; font-size:1rem; font-style:italic; color:rgba(245,236,215,0.75); line-height:2; margin-bottom:2rem; }
+    .read-btn { padding:0.7rem 2rem; border:1px solid var(--cherry-glow); color:var(--cherry-glow); background:transparent; font-family:'Raleway',sans-serif; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; cursor:none; transition:all 0.3s; }
+    .read-btn:hover { background:var(--cherry-glow); color:#fff; }
+
+    .featured-side { display:flex; flex-direction:column; gap:1rem; }
+    .side-book {
+      background:rgba(255,255,255,0.02); border:1px solid rgba(13,27,62,0.5);
+      padding:1.5rem; cursor:none; transition:all 0.3s;
+      display:flex; gap:1rem; align-items:flex-start;
+    }
+    .side-book:hover { border-color:var(--cherry-glow); background:rgba(220,20,60,0.04); }
+    .side-book-icon { font-size:2rem; flex-shrink:0; }
+    .side-book-title { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:600; margin-bottom:0.3rem; }
+    .side-book-meta { font-size:0.72rem; color:rgba(245,236,215,0.4); }
+
+    /* ALL WORKS */
+    .all-works { padding:0 4rem 6rem; }
+    .works-filter { display:flex; gap:0.8rem; flex-wrap:wrap; margin-bottom:3rem; }
+    .works-filter button { padding:0.5rem 1.2rem; border:1px solid rgba(13,27,62,0.5); background:transparent; color:rgba(245,236,215,0.5); font-family:'Raleway',sans-serif; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; cursor:none; transition:all 0.3s; }
+    .works-filter button.active, .works-filter button:hover { background:var(--cherry-glow); border-color:var(--cherry-glow); color:#fff; }
+
+    .works-list { display:grid; gap:1px; }
+    .work-row {
+      display:grid; grid-template-columns:auto 1fr auto;
+      gap:2rem; align-items:center;
+      padding:1.5rem 0; border-bottom:1px solid rgba(255,255,255,0.04);
+      cursor:none; transition:all 0.3s;
+    }
+    .work-row:hover { padding-left:1rem; }
+    .work-row:hover .work-title { color:var(--cherry-glow); }
+    .work-num { font-family:'Cinzel',serif; font-size:0.7rem; color:rgba(245,236,215,0.2); width:30px; }
+    .work-info { display:flex; flex-direction:column; gap:0.2rem; }
+    .work-type { font-size:0.6rem; letter-spacing:0.35em; text-transform:uppercase; color:var(--cherry-glow); }
+    .work-title { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:600; transition:color 0.2s; }
+    .work-by { font-size:0.75rem; color:rgba(245,236,215,0.4); }
+    .work-meta { text-align:right; }
+    .work-reads { font-size:0.72rem; color:rgba(245,236,215,0.3); }
+    .work-length { font-size:0.68rem; color:rgba(245,236,215,0.2); margin-top:0.2rem; }
+
+    /* READING MODAL */
+    .read-modal {
+      position:fixed; inset:0; background:rgba(5,5,16,0.97);
+      z-index:2000; display:none; overflow-y:auto;
+    }
+    .read-modal.open { display:block; }
+    .read-bar { position:sticky; top:0; padding:1.5rem 4rem; background:rgba(5,5,16,0.95); border-bottom:1px solid rgba(139,0,0,0.2); display:flex; justify-content:space-between; align-items:center; }
+    .read-bar-title { font-family:'Cinzel',serif; font-size:0.9rem; letter-spacing:0.2em; }
+    .read-close { background:none; border:none; color:var(--cream); font-size:1.3rem; cursor:none; }
+    .read-body { max-width:680px; margin:0 auto; padding:4rem 2rem; }
+    .read-body h1 { font-family:'Cormorant Garamond',serif; font-size:2.5rem; font-weight:600; margin-bottom:0.5rem; }
+    .read-body .byline { font-size:0.8rem; color:rgba(245,236,215,0.4); margin-bottom:3rem; letter-spacing:0.2em; }
+    .read-body p { font-family:'Cormorant Garamond',serif; font-size:1.1rem; line-height:2.1; color:rgba(245,236,215,0.85); margin-bottom:1.5rem; }
+    .read-contact { margin-top:4rem; padding:2rem; border:1px solid rgba(139,0,0,0.2); text-align:center; }
+    .read-contact p { font-size:0.8rem; color:rgba(245,236,215,0.5); margin-bottom:1rem; }
+    .contact-author-btn { padding:0.7rem 2rem; border:1px solid var(--cherry-glow); background:transparent; color:var(--cherry-glow); font-family:'Raleway',sans-serif; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; cursor:none; transition:all 0.3s; }
+    .contact-author-btn:hover { background:var(--cherry-glow); color:#fff; }
+
+    @media (max-width:768px) {
+      nav { padding:1rem 1.5rem; }
+      .lit-hero { padding:8rem 1.5rem 3rem; }
+      .featured, .all-works { padding:0 1.5rem 4rem; }
+      .featured-grid { grid-template-columns:1fr; }
+      .work-row { grid-template-columns:1fr; }
+      .work-num { display:none; }
+      .read-bar { padding:1rem 1.5rem; }
+      .read-body { padding:2rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+
+  <nav>
+    <a href="index.html" class="logo">VELVET<span>·</span>INK</a>
+    <ul class="nav-links">
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="literature.html" class="active">Literature</a></li>
+      <li><a href="fashion.html">Fashion</a></li>
+      <li><a href="poetry.html">Poetry</a></li>
+      <li><a href="community.html">Community</a></li>
+    </ul>
+    <a href="upload.html" class="btn-write">+ Write</a>
+  </nav>
+
+  <div class="lit-hero">
+    <p class="hero-eyebrow">✦ Literature Hub ✦</p>
+    <h1 class="hero-title">WORDS<br><span class="outline">THAT</span><br>ENDURE</h1>
+    <p class="hero-quote">"A reader lives a thousand lives before she dies. The man who never reads lives only one." Every story here is another life waiting to be lived.</p>
+  </div>
+
+  <!-- FEATURED -->
+  <div class="featured">
+    <p class="section-label">Editor's Picks</p>
+    <h2 class="section-title">Featured <em>This Week</em></h2>
+    <div class="featured-grid">
+      <div class="featured-main" onclick="openReader('featured')">
+        <p class="book-genre">Short Story · Literary Fiction</p>
+        <h2 class="book-title">The Weight of Empty Rooms</h2>
+        <p class="book-author">by Celeste Fontaine · 4,200 words · 17 min read</p>
+        <p class="book-excerpt">"The house had thirty-seven rooms. After the funeral, she counted them each morning — not because she'd forgotten, but because the counting was the only ritual that didn't remind her of him. On the forty-second day, she found a thirty-eighth."</p>
+        <button class="read-btn">Read Now →</button>
+      </div>
+      <div class="featured-side">
+        <div class="side-book" onclick="openReader('book2')">
+          <div class="side-book-icon">📗</div>
+          <div>
+            <p class="book-genre" style="font-size:0.58rem; letter-spacing:0.35em; text-transform:uppercase; color:var(--cherry-glow); margin-bottom:0.3rem;">Essay</p>
+            <p class="side-book-title">On the Aesthetics of Grief</p>
+            <p class="side-book-meta">by Rumi Okafor · 8 min read</p>
+          </div>
+        </div>
+        <div class="side-book" onclick="openReader('book3')">
+          <div class="side-book-icon">📕</div>
+          <div>
+            <p class="book-genre" style="font-size:0.58rem; letter-spacing:0.35em; text-transform:uppercase; color:var(--cherry-glow); margin-bottom:0.3rem;">Novel Excerpt</p>
+            <p class="side-book-title">Daughters of the Red Moon</p>
+            <p class="side-book-meta">by Isadora Vance · 12 min read</p>
+          </div>
+        </div>
+        <div class="side-book" onclick="openReader('book4')">
+          <div class="side-book-icon">📙</div>
+          <div>
+            <p class="book-genre" style="font-size:0.58rem; letter-spacing:0.35em; text-transform:uppercase; color:var(--cherry-glow); margin-bottom:0.3rem;">Article</p>
+            <p class="side-book-title">Why Fashion Needs Literature</p>
+            <p class="side-book-meta">by Marcus Delacroix · 6 min read</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALL WORKS -->
+  <div class="all-works">
+    <p class="section-label">All Works</p>
+    <h2 class="section-title">Browse the <em>Collection</em></h2>
+    <div class="works-filter">
+      <button class="active">All</button>
+      <button>Short Stories</button>
+      <button>Essays</button>
+      <button>Novels</button>
+      <button>Articles</button>
+      <button>Memoirs</button>
+    </div>
+    <div class="works-list" id="worksList"></div>
+  </div>
+
+  <!-- READING MODAL -->
+  <div class="read-modal" id="readModal">
+    <div class="read-bar">
+      <span class="read-bar-title" id="readBarTitle">Reading...</span>
+      <button class="read-close" onclick="closeReader()">✕ Close</button>
+    </div>
+    <div class="read-body" id="readBody"></div>
+  </div>
+
+  <script>
+    document.addEventListener('mousemove', e => {
+      const c = document.getElementById('cursor');
+      c.style.left = e.clientX + 'px'; c.style.top = e.clientY + 'px';
+    });
+
+    const works = [
+      { num:'01', type:'Short Story', title:'A Letter to the Sea', author:'Amara Solis', reads:'3.2K reads', length:'~9 min' },
+      { num:'02', type:'Essay', title:'The Body as Canvas: Tattooing as Art', author:'Jin Harlow', reads:'5.8K reads', length:'~12 min' },
+      { num:'03', type:'Novel Excerpt', title:'Before the Last Winter', author:'Felix Adeyemi', reads:'2.4K reads', length:'~18 min' },
+      { num:'04', type:'Memoir', title:'My Mother\'s Silence', author:'Yara Mendez', reads:'7.1K reads', length:'~15 min' },
+      { num:'05', type:'Article', title:'Dark Academia: Fashion, Literature & Identity', author:'Theo Strauss', reads:'9.3K reads', length:'~7 min' },
+      { num:'06', type:'Short Story', title:'The Cartographer of Lost Places', author:'Niamh O\'Brien', reads:'4.5K reads', length:'~11 min' },
+      { num:'07', type:'Essay', title:'On Reading in the Age of Distraction', author:'Priya Kapoor', reads:'6.7K reads', length:'~10 min' },
+      { num:'08', type:'Novel Excerpt', title:'Glass Cathedral', author:'Evander Cole', reads:'3.9K reads', length:'~20 min' },
+    ];
+
+    /* ── Toast ── */
+    function showToast(msg) {
+      let t = document.getElementById('vi-toast');
+      if (!t) { t = document.createElement('div'); t.id='vi-toast'; t.style.cssText='position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(60px);background:#DC143C;color:#fff;padding:.8rem 2rem;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;transition:transform .35s;z-index:9999;pointer-events:none;border-radius:2px;'; document.body.appendChild(t); }
+      t.textContent = msg; t.style.transform = 'translateX(-50%) translateY(0)';
+      setTimeout(() => t.style.transform = 'translateX(-50%) translateY(60px)', 3000);
+    }
+
+    /* ── localStorage helpers ── */
+    const LS = {
+      getSession   : ()    => JSON.parse(localStorage.getItem('vi_session')    || 'null'),
+      getLiterature: ()    => JSON.parse(localStorage.getItem('vi_literature') || '[]'),
+      getMessages  : ()    => JSON.parse(localStorage.getItem('vi_messages')   || '[]'),
+      saveMessages : arr   => localStorage.setItem('vi_messages', JSON.stringify(arr)),
+    };
+
+    /* ── Seed works list (static demo + user-uploaded merged) ── */
+    const DEMO_WORKS = [
+      { id:'lw1', num:'01', type:'Short Story',       title:'A Letter to the Sea',                   author:'Amara Solis',    reads:'3.2K', length:'~9 min'  },
+      { id:'lw2', num:'02', type:'Essay',              title:'The Body as Canvas',                    author:'Jin Harlow',     reads:'5.8K', length:'~12 min' },
+      { id:'lw3', num:'03', type:'Novel Excerpt',      title:'Before the Last Winter',                author:'Felix Adeyemi', reads:'2.4K', length:'~18 min' },
+      { id:'lw4', num:'04', type:'Memoir',             title:"My Mother's Silence",                   author:'Yara Mendez',   reads:'7.1K', length:'~15 min' },
+      { id:'lw5', num:'05', type:'Article',            title:'Dark Academia: Fashion, Lit & Identity', author:'Theo Strauss',  reads:'9.3K', length:'~7 min'  },
+      { id:'lw6', num:'06', type:'Short Story',        title:'The Cartographer of Lost Places',       author:"Niamh O'Brien", reads:'4.5K', length:'~11 min' },
+      { id:'lw7', num:'07', type:'Essay',              title:'On Reading in the Age of Distraction',  author:'Priya Kapoor',  reads:'6.7K', length:'~10 min' },
+      { id:'lw8', num:'08', type:'Novel Excerpt',      title:'Glass Cathedral',                       author:'Evander Cole',  reads:'3.9K', length:'~20 min' },
+    ];
+
+    /* ── Merge with user uploads ── */
+    function getAllWorks() {
+      const userUploads = LS.getLiterature().map((l, i) => ({
+        id: l.id, num: String(DEMO_WORKS.length + i + 1).padStart(2,'0'),
+        type: l.genre || 'Short Story', title: l.title, author: l.author,
+        reads: 'New', length: '~' + Math.max(1, Math.ceil((l.body||'').split(' ').length / 200)) + ' min',
+        body: l.body
+      }));
+      return [...DEMO_WORKS, ...userUploads];
+    }
+
+    /* ── Render works list ── */
+    function renderWorks(filterType = 'all') {
+      const all = getAllWorks();
+      const filtered = filterType === 'all' ? all : all.filter(w => w.type === filterType);
+      const el = document.getElementById('worksList');
+      if (!filtered.length) { el.innerHTML = '<p style="color:rgba(245,236,215,0.3);padding:2rem;font-style:italic;">No works found. <a href="upload.html" style="color:#DC143C;">Be the first to write →</a></p>'; return; }
+      el.innerHTML = filtered.map(w => `
+        <div class="work-row" onclick="openReader('${w.id}')">
+          ${w.image ? `<div style="width:48px;height:48px;border-radius:4px;background-image:url('${w.image}');background-size:cover;background-position:center;flex-shrink:0;"></div>` : `<span class="work-num">${w.num}</span>`}
+          <div class="work-info">
+            <span class="work-type">${w.type}</span>
+            <span class="work-title">${w.title}</span>
+            <span class="work-by">by ${w.author}</span>
+          </div>
+          <div class="work-meta">
+            <div class="work-reads">${w.reads}</div>
+            <div class="work-length">${w.length}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* ── Static content for demo works ── */
+    const DEMO_CONTENT = {
+      featured: { title:'The Weight of Empty Rooms', author:'Celeste Fontaine', body:`<p>The house had thirty-seven rooms. After the funeral, she counted them each morning — not because she'd forgotten, but because the counting was the only ritual that didn't remind her of him. On the forty-second day, she found a thirty-eighth.</p><p>It was behind the library, behind a wall of books she hadn't touched since he'd alphabetized them by the author's first name rather than last, insisting that first names were what people truly were.</p><p>The room was small. A single chair, a window that looked into the garden's dark corner where he'd grown his failed herbs. On the chair's arm: a teacup. His mug, the one with the broken handle she'd meant to throw away for years.</p><p>Inside: cold tea. Three days old at most. Which was impossible. Which meant he'd been here. Which meant she'd been wrong about everything she thought she knew about grief — that it was something you moved through, or that it was something that moved.</p><p>She sat in the chair and held the mug and did not cry. She had learned, these forty-two days, that crying was for people who still believed in endings.</p>` },
+      lw1:      { title:'A Letter to the Sea', author:'Amara Solis', body:`<p>I never learned to swim and you never learned to be still, and I think that's why we understood each other.</p><p>Every summer my mother brought me to the shore. I would stand at the edge where the waves erased my footprints and feel the profound insult of being temporary. You were so permanent then. Or so I believed.</p><p>Now I read about rising oceans and I wonder if you were always as afraid as I was. If your constant motion was not power but panic. If your depths were not mystery but avoidance.</p><p>We would have been good friends, I think, had we been less busy performing our roles for each other.</p>` },
+    };
+
+    function openReader(id) {
+      let c = DEMO_CONTENT[id];
+      if (!c) {
+        const userWork = LS.getLiterature().find(l => l.id === id);
+        if (userWork) c = { title: userWork.title, author: userWork.author, image: userWork.image || null, body: userWork.body.split('\n').map(p => p ? `<p>${p}</p>` : '').join('') };
+        else c = DEMO_CONTENT.featured;
+      }
+      document.getElementById('readBarTitle').textContent = c.title;
+      document.getElementById('readBody').innerHTML = `
+        ${c.image ? `<img src="${c.image}" style="width:100%;max-height:320px;object-fit:cover;border-radius:6px;margin-bottom:2.5rem;border:1px solid rgba(255,255,255,0.08);"/>` : ''}
+        <h1 style="font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:.4rem;">${c.title}</h1>
+        <p class="byline" style="font-size:.72rem;letter-spacing:.2em;color:rgba(245,236,215,.35);margin-bottom:3rem;">by ${c.author}</p>
+        ${c.body}
+        <div class="read-contact" style="margin-top:4rem;padding:2rem;border:1px solid rgba(139,0,0,.2);text-align:center;">
+          <p style="font-size:.78rem;color:rgba(245,236,215,.38);margin-bottom:1.2rem;">Enjoyed this piece? Connect with the author.</p>
+          <button class="contact-author-btn" onclick="contactAuthor('${c.author}')">✉ Contact ${c.author}</button>
+        </div>
+      `;
+      document.getElementById('readModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function contactAuthor(author) {
+      const session = LS.getSession();
+      if (!session) { showToast('Please sign in to contact authors →'); setTimeout(()=>window.location.href='login.html',1400); return; }
+      const msgs = LS.getMessages();
+      msgs.push({ from: session.name, fromEmail: session.email, to: author, msg: 'Loved your work!', date: new Date().toLocaleDateString() });
+      LS.saveMessages(msgs);
+      showToast('Message sent to ' + author + '! ✦');
+    }
+
+    function closeReader() { document.getElementById('readModal').classList.remove('open'); document.body.style.overflow = ''; }
+
+    /* ── Filter buttons ── */
+    document.querySelectorAll('.works-filter button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.works-filter button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        renderWorks(this.textContent.trim() === 'All' ? 'all' : this.textContent.trim());
+      });
+    });
+
+    /* ── Nav session ── */
+    const session = LS.getSession();
+    if (session) {
+      const navAuth = document.querySelector('.nav-auth');
+      if (navAuth) navAuth.innerHTML = `<a href="profile.html" style="color:rgba(245,236,215,.7);text-decoration:none;font-size:.68rem;letter-spacing:.2em;">👤 ${session.name.split(' ')[0]}</a>`;
+    }
+
+    renderWorks();
+  </script>
+</body>
+</html>
